@@ -6,7 +6,7 @@
     <title>WizDesk - Smart Task Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* All original CSS is restored, with only the logo-related parts replaced */
+        /* All original CSS from 1.index.html */
         * {
             margin: 0;
             padding: 0;
@@ -167,8 +167,6 @@
             margin-top: 20px;
             flex-wrap: wrap;
         }
-
-        /* (The rest of the CSS is from your original file) */
         
         .feature {
             display: flex;
@@ -653,7 +651,6 @@
         .btn-primary:hover::before {
             left: 100%;
         }
-
     </style>
 </head>
 <body>
@@ -715,7 +712,7 @@
                 <form id="leaderLoginForm">
                     <div class="form-group">
                         <label class="form-label">Email Address</label>
-                        <input type="email" placeholder="Enter your email" required>
+                        <input type="email" id="leaderEmail" placeholder="Enter your email" required>
                         <i class="fas fa-envelope input-icon"></i>
                     </div>
                     <div class="form-group">
@@ -727,7 +724,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Team Code</label>
-                        <input type="text" placeholder="Enter your team code" required>
+                        <input type="text" id="leaderTeamCode" placeholder="Enter your team code" required>
                         <i class="fas fa-users input-icon"></i>
                     </div>
                     <button type="submit" class="btn-primary">
@@ -747,7 +744,7 @@
                 <form id="memberLoginForm">
                     <div class="form-group">
                         <label class="form-label">Email Address</label>
-                        <input type="email" placeholder="Enter your email" required>
+                        <input type="email" id="memberEmail" placeholder="Enter your email" required>
                         <i class="fas fa-envelope input-icon"></i>
                     </div>
                     <div class="form-group">
@@ -759,7 +756,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Team Code</label>
-                        <input type="text" placeholder="Enter your team code" required>
+                        <input type="text" id="memberTeamCode" placeholder="Enter your team code" required>
                         <i class="fas fa-users input-icon"></i>
                     </div>
                     <button type="submit" class="btn-primary">
@@ -793,6 +790,9 @@
     </footer>
 
     <script>
+        // API Configuration
+        const API_BASE = 'http://localhost:3000/api';
+
         // Enhanced Particle System
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
@@ -870,19 +870,7 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            createParticles();
-            initTypingAnimation();
-            initInteractiveBackground();
-            
-            setTimeout(() => {
-                document.querySelector('.loading-bar').style.display = 'none';
-            }, 2000);
-        });
-
-        // Your existing JavaScript functions remain the same
-        const API_BASE = 'http://localhost:3000/api';
-
+        // Utility Functions
         const showMessage = (message, type = 'success') => {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
@@ -928,18 +916,169 @@
             }
         }
 
-        // All form submission and API logic is preserved
+        // Check member status before login
+        const checkMemberStatus = async (email, teamCode) => {
+            try {
+                const response = await fetch(`${API_BASE}/auth/check-member-status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, teamCode })
+                });
+
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('Error checking member status:', error);
+                return null;
+            }
+        };
+
+        // Leader Login
         const leaderLoginForm = document.getElementById('leaderLoginForm');
         if (leaderLoginForm) {
-            leaderLoginForm.addEventListener('submit', async (e) => { e.preventDefault(); /* ... */ });
+            leaderLoginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const email = document.getElementById('leaderEmail').value;
+                const password = document.getElementById('leaderPassword').value;
+                const teamCode = document.getElementById('leaderTeamCode').value;
+                
+                const submitButton = leaderLoginForm.querySelector('button[type="submit"]');
+                setButtonLoading(submitButton, true);
+
+                try {
+                    const response = await fetch(`${API_BASE}/auth/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password, teamCode })
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        // Check if user is actually a leader
+                        if (result.user.role !== 'leader') {
+                            showMessage('Access denied. This account is not a team leader.', 'error');
+                            setButtonLoading(submitButton, false);
+                            return;
+                        }
+
+                        showMessage('Login successful! Redirecting...', 'success');
+                        localStorage.setItem('user', JSON.stringify(result.user));
+                        setTimeout(() => {
+                            window.location.href = 'leader-dashboard.html';
+                        }, 1000);
+                    } else {
+                        showMessage(result.error, 'error');
+                        setButtonLoading(submitButton, false);
+                    }
+                } catch (error) {
+                    showMessage('Login failed. Please try again.', 'error');
+                    setButtonLoading(submitButton, false);
+                }
+            });
         }
 
+        // Member Login
         const memberLoginForm = document.getElementById('memberLoginForm');
         if (memberLoginForm) {
-            memberLoginForm.addEventListener('submit', async (e) => { e.preventDefault(); /* ... */ });
+            memberLoginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('memberEmail').value;
+                const password = document.getElementById('memberPassword').value;
+                const teamCode = document.getElementById('memberTeamCode').value;
+
+                const submitButton = memberLoginForm.querySelector('button[type="submit"]');
+                setButtonLoading(submitButton, true);
+
+                // Hide any previous status messages
+                hideMemberStatusMessage();
+
+                try {
+                    // First check member status
+                    const statusCheck = await checkMemberStatus(email, teamCode);
+                    
+                    if (statusCheck && !statusCheck.canLogin) {
+                        // Show appropriate status message
+                        if (statusCheck.status === 'pending') {
+                            showMemberStatusMessage(
+                                'Your membership is pending approval from the team leader. Please wait for approval.',
+                                'pending'
+                            );
+                        } else if (statusCheck.status === 'rejected') {
+                            showMemberStatusMessage(
+                                'Your membership request was rejected. Please contact your team leader.',
+                                'rejected'
+                            );
+                        } else {
+                            showMemberStatusMessage(
+                                statusCheck.message || 'Unable to login. Please contact your team leader.',
+                                'info'
+                            );
+                        }
+                        setButtonLoading(submitButton, false);
+                        return;
+                    }
+
+                    // If status is approved or no status check available, proceed with login
+                    const response = await fetch(`${API_BASE}/auth/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password, teamCode })
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        // Additional check for member status in the response
+                        if (result.user.role === 'member' && result.user.status !== 'approved') {
+                            if (result.user.status === 'pending') {
+                                showMessage('Your membership is pending approval from the team leader.', 'warning');
+                            } else if (result.user.status === 'rejected') {
+                                showMessage('Your membership request was rejected. Please contact your team leader.', 'error');
+                            } else {
+                                showMessage('Unable to login. Please contact your team leader.', 'error');
+                            }
+                            setButtonLoading(submitButton, false);
+                            return;
+                        }
+
+                        showMessage('Login successful! Redirecting...', 'success');
+                        localStorage.setItem('user', JSON.stringify(result.user));
+                        setTimeout(() => {
+                            if (result.user.role === 'leader') {
+                                window.location.href = 'leader-dashboard.html';
+                            } else {
+                                window.location.href = 'member-dashboard.html';
+                            }
+                        }, 1000);
+                    } else {
+                        showMessage(result.error, 'error');
+                        setButtonLoading(submitButton, false);
+                    }
+                } catch (error) {
+                    showMessage('Login failed. Please try again.', 'error');
+                    setButtonLoading(submitButton, false);
+                }
+            });
+
+            // Clear status message when user starts typing
+            memberLoginForm.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', hideMemberStatusMessage);
+            });
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            initTypingAnimation();
+            initInteractiveBackground();
+            
+            setTimeout(() => {
+                document.querySelector('.loading-bar').style.display = 'none';
+            }, 2000);
+            
+            // Clear any existing user data to force login
             localStorage.removeItem('user');
         });
     </script>
