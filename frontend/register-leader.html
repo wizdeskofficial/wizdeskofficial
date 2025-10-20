@@ -5,47 +5,402 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register as Leader - WizDesk</title>
     <style>
-        /* Your existing CSS is perfect and doesn't need changes. */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .container { max-width: 500px; width: 100%; }
-        header { text-align: center; color: white; margin-bottom: 30px; }
-        header h1 { font-size: 3rem; margin-bottom: 10px; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        header p { font-size: 1.2rem; opacity: 0.9; }
-        .form-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
-        .form-card h2 { text-align: center; margin-bottom: 30px; color: #333; font-size: 1.8rem; font-weight: 600; }
-        .form-group { margin-bottom: 20px; position: relative; }
-        input { width: 100%; padding: 15px 20px; border: 2px solid #e1e5e9; border-radius: 10px; font-size: 16px; transition: all 0.3s ease; background: #f8f9fa; }
-        input:focus { outline: none; border-color: #667eea; background: white; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
-        input.error { border-color: #dc3545; }
-        input.success { border-color: #28a745; }
-        .password-match { display: none; font-size: 14px; margin-top: 5px; padding: 5px 10px; border-radius: 5px; }
-        .password-match.error { display: block; color: #dc3545; background: #f8d7da; }
-        .password-match.success { display: block; color: #155724; background: #d4edda; }
-        .password-strength { margin-top: 5px; font-size: 14px; padding: 5px 10px; border-radius: 5px; display: none; }
-        .password-strength.weak { display: block; color: #721c24; background: #f8d7da; }
-        .password-strength.strong { display: block; color: #155724; background: #d4edda; }
-        .password-requirements { font-size: 12px; color: #666; margin-top: 5px; padding: 10px; background: #f8f9fa; border-radius: 5px; border-left: 3px solid #667eea; }
-        .requirement { display: flex; align-items: center; margin: 3px 0; }
-        .requirement.met { color: #28a745; }
-        .requirement.unmet { color: #dc3545; }
-        .requirement-icon { margin-right: 8px; font-weight: bold; }
-        .btn-primary { width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-top: 10px; }
-        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3); }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-        .btn-secondary { width: 100%; padding: 12px; background: #6c757d; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-top: 10px; }
-        .btn-secondary:hover { background: #5a6268; transform: translateY(-2px); }
-        .verification-sent-message { display: none; text-align: center; padding: 30px; background: #e7f3ff; border-radius: 15px; border: 1px solid #b3d9ff; }
-        .verification-sent-message h3 { color: #004085; margin-bottom: 15px; }
-        .verification-sent-message p { color: #004085; margin-bottom: 10px; }
-        .verification-sent-message .icon { font-size: 3rem; margin-bottom: 15px; }
-        .message { position: fixed; top: 20px; right: 20px; padding: 15px 25px; border-radius: 10px; color: white; font-weight: 500; z-index: 10000; box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: slideIn 0.3s ease; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        .message.success { background: linear-gradient(135deg, #28a745, #20c997); }
-        .message.error { background: linear-gradient(135deg, #dc3545, #e83e8c); }
-        .back-link { text-align: center; margin-top: 20px; }
-        .back-link a { color: #667eea; text-decoration: none; font-weight: 500; }
-        .back-link a:hover { text-decoration: underline; }
+        /* Your existing CSS remains the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+            padding: 20px;
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .form-card h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input.error {
+            border-color: #dc3545;
+            background: #f8f7ff;
+        }
+
+        input.success {
+            border-color: #28a745;
+        }
+
+        input:disabled {
+            background: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .password-match {
+            display: none;
+            font-size: 14px;
+            margin-top: 5px;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .password-match.error {
+            display: block;
+            color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .password-match.success {
+            display: block;
+            color: #155724;
+            background: #d4edda;
+        }
+
+        .password-strength {
+            margin-top: 5px;
+            font-size: 14px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .password-strength.weak {
+            display: block;
+            color: #721c24;
+            background: #f8d7da;
+        }
+
+        .password-strength.medium {
+            display: block;
+            color: #856404;
+            background: #fff3cd;
+        }
+
+        .password-strength.strong {
+            display: block;
+            color: #155724;
+            background: #d4edda;
+        }
+
+        .password-requirements {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            margin: 3px 0;
+        }
+
+        .requirement.met {
+            color: #28a745;
+        }
+
+        .requirement.unmet {
+            color: #dc3545;
+        }
+
+        .requirement-icon {
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-verify {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .btn-verify:hover:not(:disabled) {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+        }
+
+        /* Verification Section */
+        .verification-section {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .verification-status {
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+
+        .verification-pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .verification-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .verification-code-input {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            margin-top: 20px;
+            padding: 30px;
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .success-message h3 {
+            color: #155724;
+            margin-bottom: 15px;
+        }
+
+        .success-message p {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .team-code {
+            font-size: 1.5rem;
+            color: #0c5460;
+            font-weight: bold;
+            margin: 10px 0;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px dashed #28a745;
+        }
+
+        .email-status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .email-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .email-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .email-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Message Styles */
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            max-width: 400px;
+            word-wrap: break-word;
+        }
+
+        .message.success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .message.error {
+            background: linear-gradient(135deg, #dc3545, #e83e8c);
+        }
+
+        .message.warning {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+        }
+
+        .message.info {
+            background: linear-gradient(135deg, #17a2b8, #20c997);
+        }
+
+        /* Loading State */
+        .btn-primary.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        .btn-primary.loading::after {
+            content: ' ⏳';
+        }
+
+        /* Retry Button */
+        .btn-retry {
+            background: linear-gradient(135deg, #fd7e14, #e44d26);
+        }
+
+        .btn-retry:hover:not(:disabled) {
+            background: linear-gradient(135deg, #e65c19, #cc3a10);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-card {
+                padding: 30px 25px;
+            }
+            
+            header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .message {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .form-card {
+                padding: 20px 15px;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -57,197 +412,551 @@
 
         <div class="form-container">
             <div class="form-card">
+                <h2>Create Your Team</h2>
                 
-                <div id="verificationSentMessage" class="verification-sent-message">
-                    <div class="icon">📧</div>
-                    <h3>Check Your Inbox!</h3>
-                    <p>We've sent a verification link to <strong id="sentToEmail">your email</strong>.</p>
-                    <p>Click the link in the email to create your team and complete your registration.</p>
-                    <p style="margin-top: 20px; font-size: 0.9rem; color: #6c757d;">You can now close this page.</p>
-                </div>
-
-                <div id="registrationContainer">
-                    <h2>Create Your Team</h2>
-                    <form id="leaderRegisterForm">
-                        <div class="form-group">
-                            <input type="text" id="leaderName" placeholder="Your Full Name" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" id="leaderEmail" placeholder="Email Address" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="password" id="leaderPassword" placeholder="Password" required minlength="6">
-                            <div id="passwordStrength" class="password-strength"></div>
-                            <div class="password-requirements">
-                                <div class="requirement unmet" id="reqLength"><span class="requirement-icon">○</span> At least 6 characters</div>
-                                <div class="requirement unmet" id="reqSpecial"><span class="requirement-icon">○</span> At least 1 special character</div>
+                <form id="leaderRegisterForm">
+                    <div class="form-group">
+                        <input type="text" id="leaderName" placeholder="Your Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="leaderEmail" placeholder="Email Address" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="leaderPassword" placeholder="Password" required minlength="6">
+                        <div id="passwordStrength" class="password-strength"></div>
+                        <div class="password-requirements">
+                            <div class="requirement" id="reqLength">
+                                <span class="requirement-icon">○</span>
+                                At least 6 characters
+                            </div>
+                            <div class="requirement" id="reqSpecial">
+                                <span class="requirement-icon">○</span>
+                                At least 1 special character (!@#$%^&* etc.)
                             </div>
                         </div>
-                        <div class="form-group">
-                            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
-                            <div id="passwordMatch" class="password-match"></div>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" id="teamName" placeholder="Your New Team's Name" required>
-                        </div>
-                        
-                        <button type="submit" class="btn-primary" id="verifyEmailBtn">
-                            Send Verification Email
-                        </button>
-                    </form>
-                    <div style="margin-top: 20px;">
-                        <button onclick="window.location.href='index.html'" class="btn-secondary">Back to Login</button>
                     </div>
-                    <p class="back-link">
-                        <a href="index.html">← Already have an account?</a>
-                    </p>
+                    <div class="form-group">
+                        <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                        <div id="passwordMatch" class="password-match"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="teamName" placeholder="Team Name" required>
+                    </div>
+                    
+                    <button type="button" class="btn-primary btn-verify" id="verifyEmailBtn">
+                        Verify Your Email
+                    </button>
+                </form>
+
+                <div id="verificationSection" style="display: none;">
+                    <div class="verification-section">
+                        <h3>Step 2: Verify Your Email</h3>
+                        <div id="verificationStatus" class="verification-status verification-pending">
+                            📧 Sending verification code...
+                        </div>
+
+                        <div id="verificationSuccess" style="display: none;">
+                            <div class="verification-status verification-success">
+                                ✅ Email verified successfully!
+                            </div>
+                            <p>Your email has been verified. Click "Create Team" to complete registration.</p>
+                        </div>
+
+                        <div id="manualVerification" style="display: none;">
+                            <p style="margin-bottom: 10px; color: #666;">Enter the 6-digit verification code sent to your email:</p>
+                            <div class="form-group">
+                                <input type="text" id="manualTokenInput" placeholder="Enter 6-digit code" class="verification-code-input" maxlength="6" pattern="[0-9]{6}">
+                            </div>
+                            <button type="button" class="btn-primary" id="manualVerifyBtn">
+                                Verify Code
+                            </button>
+                        </div>
+
+                        <!-- Retry Section -->
+                        <div id="retrySection" style="display: none; margin-top: 15px;">
+                            <p style="color: #666; margin-bottom: 10px;">Email not received?</p>
+                            <button type="button" class="btn-primary btn-retry" id="retryEmailBtn">
+                                Resend Verification Code
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-primary" id="createTeamBtn" style="display: none;">
+                        Create Team
+                    </button>
                 </div>
+                
+                <div id="successMessage" class="success-message">
+                    <h3>🎉 Registration Successful!</h3>
+                    <p>Your team has been created successfully.</p>
+                    <p><strong>Team Code: <span id="generatedTeamCode" class="team-code"></span></strong></p>
+                    
+                    <div id="emailStatus" class="email-status"></div>
+                    
+                    <p style="font-size: 0.9rem; margin-bottom: 20px; color: #155724;">
+                        Please save this team code and share it with your team members.
+                    </p>
+                    <button onclick="window.location.href='index.html'" class="btn-primary" style="background: linear-gradient(135deg, #28a745, #20c997);">
+                        Go to Login
+                    </button>
+                </div>
+                
+                <p class="back-link">
+                    <a href="index.html">← Back to Login</a>
+                </p>
             </div>
         </div>
     </div>
 
     <script>
-        const API_BASE = '/api';
+        // Auto-detect API base URL for production
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? '/api' 
+            : `${window.location.origin}/api`;
 
-        // --- DOM Elements ---
-        const leaderRegisterForm = document.getElementById('leaderRegisterForm');
-        const registrationContainer = document.getElementById('registrationContainer');
-        const verificationSentMessage = document.getElementById('verificationSentMessage');
-        const sentToEmail = document.getElementById('sentToEmail');
-        const verifyEmailBtn = document.getElementById('verifyEmailBtn');
-        const passwordInput = document.getElementById('leaderPassword');
-        const confirmPasswordInput = document.getElementById('confirmPassword');
-        const passwordMatchDiv = document.getElementById('passwordMatch');
-        const passwordStrengthDiv = document.getElementById('passwordStrength');
-        const reqLength = document.getElementById('reqLength');
-        const reqSpecial = document.getElementById('reqSpecial');
+        console.log('🌐 API Base URL:', API_BASE);
 
-        // --- Utility Functions ---
-        const showMessage = (message, type = 'success') => {
-            document.querySelectorAll('.message').forEach(el => el.remove());
+        // Utility function for showing messages
+        const showMessage = (message, type = 'success', duration = 5000) => {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
             messageDiv.textContent = message;
             document.body.appendChild(messageDiv);
-            setTimeout(() => messageDiv.remove(), 5000);
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
+                }
+            }, duration);
         };
 
-        const setButtonLoading = (button, isLoading) => {
-            button.disabled = isLoading;
-            button.textContent = isLoading ? 'Sending...' : 'Send Verification Email';
-        };
+        // DOM Elements
+        const leaderRegisterForm = document.getElementById('leaderRegisterForm');
+        const verificationSection = document.getElementById('verificationSection');
+        const verificationStatus = document.getElementById('verificationStatus');
+        const verificationSuccess = document.getElementById('verificationSuccess');
+        const manualVerification = document.getElementById('manualVerification');
+        const successMessage = document.getElementById('successMessage');
+        const retrySection = document.getElementById('retrySection');
+        const verifyEmailBtn = document.getElementById('verifyEmailBtn');
+        const manualVerifyBtn = document.getElementById('manualVerifyBtn');
+        const createTeamBtn = document.getElementById('createTeamBtn');
+        const retryEmailBtn = document.getElementById('retryEmailBtn');
+        const passwordInput = document.getElementById('leaderPassword');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordMatchDiv = document.getElementById('passwordMatch');
+        const passwordStrengthDiv = document.getElementById('passwordStrength');
 
-        // --- Password Validation Logic ---
+        // Password requirements elements
+        const reqLength = document.getElementById('reqLength');
+        const reqSpecial = document.getElementById('reqSpecial');
+
+        let verificationToken = '';
+        let retryCount = 0;
+        const MAX_RETRIES = 3;
+
+        // Enhanced password strength checker with special character requirement
         function checkPasswordStrength(password) {
-            const requirements = {
-                length: password.length >= 6,
-                special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+            let strength = 0;
+            let feedback = '';
+            let requirements = {
+                length: false,
+                special: false
             };
+
+            // Length check (minimum 6 characters)
+            if (password.length >= 6) {
+                strength++;
+                requirements.length = true;
+            } else {
+                feedback = 'Password must be at least 6 characters';
+            }
+
+            // Special character check
+            if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+                strength++;
+                requirements.special = true;
+            } else if (!feedback) {
+                feedback = 'Password must include at least 1 special character';
+            }
+
+            // Update requirement indicators
             updateRequirementIndicators(requirements);
 
-            if (requirements.length && requirements.special) {
-                passwordStrengthDiv.textContent = 'Strong password';
-                passwordStrengthDiv.className = 'password-strength strong';
-                passwordInput.classList.remove('error');
-                passwordInput.classList.add('success');
-                return true;
+            // Determine strength level
+            if (strength < 2) {
+                return { level: 'weak', message: feedback || 'Weak password', requirements };
+            } else if (strength === 2) {
+                return { level: 'strong', message: 'Strong password', requirements };
             } else {
-                passwordStrengthDiv.textContent = 'Weak password';
-                passwordStrengthDiv.className = 'password-strength weak';
-                passwordInput.classList.add('error');
-                passwordInput.classList.remove('success');
-                return false;
+                return { level: 'strong', message: 'Strong password', requirements };
             }
         }
 
+        // Update requirement indicators
         function updateRequirementIndicators(requirements) {
-            updateIndicator(reqLength, requirements.length, 'At least 6 characters');
-            updateIndicator(reqSpecial, requirements.special, 'At least 1 special character');
+            // Length requirement
+            if (requirements.length) {
+                reqLength.className = 'requirement met';
+                reqLength.innerHTML = '<span class="requirement-icon">✓</span> At least 6 characters';
+            } else {
+                reqLength.className = 'requirement unmet';
+                reqLength.innerHTML = '<span class="requirement-icon">✗</span> At least 6 characters';
+            }
+
+            // Special character requirement
+            if (requirements.special) {
+                reqSpecial.className = 'requirement met';
+                reqSpecial.innerHTML = '<span class="requirement-icon">✓</span> At least 1 special character (!@#$%^&* etc.)';
+            } else {
+                reqSpecial.className = 'requirement unmet';
+                reqSpecial.innerHTML = '<span class="requirement-icon">✗</span> At least 1 special character (!@#$%^&* etc.)';
+            }
         }
 
-        function updateIndicator(element, isMet, text) {
-            element.className = `requirement ${isMet ? 'met' : 'unmet'}`;
-            element.innerHTML = `<span class="requirement-icon">${isMet ? '✓' : '○'}</span> ${text}`;
-        }
-
+        // Password match checker
         function checkPasswordMatch() {
-            const isMatch = passwordInput.value === confirmPasswordInput.value && confirmPasswordInput.value !== '';
-            if (confirmPasswordInput.value === '') {
-                passwordMatchDiv.style.display = 'none';
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            if (confirmPassword === '') {
+                passwordMatchDiv.className = 'password-match';
                 confirmPasswordInput.classList.remove('error', 'success');
-            } else if (isMatch) {
+                return false;
+            }
+
+            if (password === confirmPassword) {
                 passwordMatchDiv.textContent = '✓ Passwords match';
                 passwordMatchDiv.className = 'password-match success';
                 confirmPasswordInput.classList.remove('error');
                 confirmPasswordInput.classList.add('success');
+                return true;
             } else {
                 passwordMatchDiv.textContent = '✗ Passwords do not match';
                 passwordMatchDiv.className = 'password-match error';
-                confirmPasswordInput.classList.add('error');
                 confirmPasswordInput.classList.remove('success');
+                confirmPasswordInput.classList.add('error');
+                return false;
             }
-            return isMatch;
         }
 
-        // --- Form Submission Logic ---
+        // Form validation
         function validateForm() {
-            const isPasswordStrong = checkPasswordStrength(passwordInput.value);
-            const passwordsMatch = checkPasswordMatch();
-            verifyEmailBtn.disabled = !(isPasswordStrong && passwordsMatch);
+            const name = document.getElementById('leaderName').value;
+            const email = document.getElementById('leaderEmail').value;
+            const password = passwordInput.value;
+            const teamName = document.getElementById('teamName').value;
+            
+            const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            const passwordStrength = checkPasswordStrength(password);
+            const isPasswordValid = passwordStrength.requirements.length && passwordStrength.requirements.special;
+            const isPasswordMatch = checkPasswordMatch();
+            const isFormComplete = name && email && password && teamName;
+
+            verifyEmailBtn.disabled = !(isFormComplete && isEmailValid && isPasswordValid && isPasswordMatch);
         }
 
-        async function handleRegistrationSubmit(event) {
-            event.preventDefault();
-            validateForm(); // Final check before submit
-            if (verifyEmailBtn.disabled) {
-                showMessage('Please fix the errors before submitting.', 'error');
-                return;
-            }
-
-            setButtonLoading(verifyEmailBtn, true);
-
+        // Send verification email with retry logic
+        async function sendVerificationEmail(isRetry = false) {
             const name = document.getElementById('leaderName').value;
             const email = document.getElementById('leaderEmail').value;
             const password = passwordInput.value;
             const teamName = document.getElementById('teamName').value;
 
+            // Disable form fields
+            document.querySelectorAll('#leaderRegisterForm input').forEach(input => {
+                input.disabled = true;
+            });
+
+            if (isRetry) {
+                retryCount++;
+                retryEmailBtn.textContent = `Resending... (${retryCount}/${MAX_RETRIES})`;
+                retryEmailBtn.disabled = true;
+            } else {
+                verifyEmailBtn.textContent = 'Sending Verification...';
+                verifyEmailBtn.disabled = true;
+                verificationStatus.textContent = '📧 Sending verification code...';
+            }
+
             try {
                 const response = await fetch(`${API_BASE}/auth/send-verification`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify({ name, email, password, teamName })
                 });
 
                 const result = await response.json();
 
-                if (!response.ok) {
-                    throw new Error(result.error || 'An unknown error occurred.');
-                }
-                
-                // Success: Show the "check your email" message
-                showMessage('Verification email sent! Check your inbox to continue.', 'success');
-                sentToEmail.textContent = email;
-                registrationContainer.style.display = 'none';
-                verificationSentMessage.style.display = 'block';
+                if (response.ok) {
+                    verificationToken = result.verificationToken;
+                    
+                    if (!isRetry) {
+                        // Show verification section on first attempt
+                        leaderRegisterForm.style.display = 'none';
+                        verificationSection.style.display = 'block';
+                    }
+                    
+                    if (result.emailSent && result.emailMethod === 'email') {
+                        verificationStatus.textContent = '📧 Verification code sent to your email! Check your inbox.';
+                        verificationStatus.className = 'verification-status verification-success';
+                        showMessage('Verification code sent to your email!', 'success');
+                    } else {
+                        verificationStatus.textContent = '📧 Email service unavailable. Please try manual verification.';
+                        verificationStatus.className = 'verification-status verification-pending';
+                        showMessage('Email service temporarily unavailable. Please try manual verification.', 'warning');
+                    }
+                    
+                    // Show manual verification and retry options
+                    manualVerification.style.display = 'block';
+                    retrySection.style.display = 'block';
+                    
+                    if (isRetry) {
+                        showMessage('Verification code resent!', 'info');
+                    }
 
+                } else {
+                    // If email already exists, show error and don't move to verification
+                    if (result.error && result.error.includes('already registered')) {
+                        throw new Error(result.error);
+                    } else {
+                        throw new Error(result.error || 'Failed to send verification');
+                    }
+                }
             } catch (error) {
+                console.error('Verification error:', error);
+                
+                // Show error message and re-enable form
                 showMessage(error.message, 'error');
-                setButtonLoading(verifyEmailBtn, false); // Re-enable button on failure
+                
+                // Re-enable form fields
+                document.querySelectorAll('#leaderRegisterForm input').forEach(input => {
+                    input.disabled = false;
+                });
+                
+                if (isRetry) {
+                    retryEmailBtn.disabled = false;
+                    retryEmailBtn.textContent = `Retry Failed - Click to try again (${retryCount}/${MAX_RETRIES})`;
+                } else {
+                    verifyEmailBtn.textContent = 'Verify Your Email';
+                    verifyEmailBtn.disabled = false;
+                    validateForm();
+                    
+                    // Don't show verification section if email already exists
+                    if (!error.message.includes('already registered')) {
+                        leaderRegisterForm.style.display = 'none';
+                        verificationSection.style.display = 'block';
+                        verificationStatus.textContent = '❌ Failed to send email. Please try manual verification.';
+                        verificationStatus.className = 'verification-status verification-pending';
+                        manualVerification.style.display = 'block';
+                        retrySection.style.display = 'block';
+                    }
+                }
+            } finally {
+                if (!isRetry) {
+                    verifyEmailBtn.textContent = 'Verify Your Email';
+                    verifyEmailBtn.disabled = false;
+                } else {
+                    retryEmailBtn.textContent = 'Resend Verification Code';
+                    retryEmailBtn.disabled = false;
+                }
             }
         }
-        
-        // --- Event Listeners ---
-        leaderRegisterForm.addEventListener('submit', handleRegistrationSubmit);
-        passwordInput.addEventListener('input', validateForm);
-        confirmPasswordInput.addEventListener('input', validateForm);
-        
-        // Add listeners to other fields to enable the button as the user types
-        ['leaderName', 'leaderEmail', 'teamName'].forEach(id => {
-            document.getElementById(id).addEventListener('input', validateForm);
+
+        // Manual verification - FIXED VERSION
+        async function verifyManualToken() {
+            const code = document.getElementById('manualTokenInput').value.trim();
+
+            if (!code) {
+                showMessage('Please enter the verification code', 'error');
+                return;
+            }
+
+            if (code.length !== 6 || !/^\d+$/.test(code)) {
+                showMessage('Please enter a valid 6-digit code', 'error');
+                return;
+            }
+
+            manualVerifyBtn.textContent = 'Verifying...';
+            manualVerifyBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/verify-email-code`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ code: code })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    verificationToken = code;
+                    showVerificationSuccess();
+                    completeRegistration(result);
+                } else {
+                    showMessage(result.error || 'Invalid verification code', 'error');
+                }
+            } catch (error) {
+                console.error('Verification error:', error);
+                showMessage('Verification failed. Please check your connection.', 'error');
+            } finally {
+                manualVerifyBtn.textContent = 'Verify Code';
+                manualVerifyBtn.disabled = false;
+            }
+        }
+
+        // Complete registration after verification
+        async function completeRegistration(result) {
+            document.getElementById('generatedTeamCode').textContent = result.teamCode;
+            
+            const emailStatus = document.getElementById('emailStatus');
+            if (result.emailSent) {
+                if (result.emailMethod === 'email') {
+                    emailStatus.innerHTML = `
+                        <div class="email-success">
+                            ✅ Team code has been sent to your email address: <strong>${result.user.email}</strong>
+                        </div>
+                    `;
+                } else {
+                    emailStatus.innerHTML = `
+                        <div class="email-warning">
+                            📧 Email service not configured. Please save the team code above.
+                        </div>
+                    `;
+                }
+            } else {
+                emailStatus.innerHTML = `
+                    <div class="email-error">
+                        ⚠️ Could not send email. Please save the team code: <strong>${result.teamCode}</strong>
+                    </div>
+                `;
+            }
+            
+            verificationSection.style.display = 'none';
+            successMessage.style.display = 'block';
+        }
+
+        function showVerificationSuccess() {
+            verificationSuccess.style.display = 'block';
+            manualVerification.style.display = 'none';
+            retrySection.style.display = 'none';
+            createTeamBtn.style.display = 'block';
+            verificationStatus.className = 'verification-status verification-success';
+            verificationStatus.textContent = '✅ Email verified successfully!';
+        }
+
+        // Event Listeners
+        verifyEmailBtn.addEventListener('click', () => sendVerificationEmail(false));
+        manualVerifyBtn.addEventListener('click', verifyManualToken);
+        retryEmailBtn.addEventListener('click', () => {
+            if (retryCount >= MAX_RETRIES) {
+                showMessage(`Maximum retry attempts (${MAX_RETRIES}) reached. Please use the manual verification.`, 'warning');
+                return;
+            }
+            sendVerificationEmail(true);
         });
 
-        // Initial validation check on page load
+        createTeamBtn.addEventListener('click', async () => {
+            if (!verificationToken) {
+                showMessage('Please verify your email first', 'error');
+                return;
+            }
+
+            createTeamBtn.classList.add('loading');
+            createTeamBtn.disabled = true;
+            createTeamBtn.textContent = 'Creating Team...';
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/verify-email`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ token: verificationToken })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    completeRegistration(result);
+                } else {
+                    showMessage(result.error || 'Registration failed', 'error');
+                    createTeamBtn.classList.remove('loading');
+                    createTeamBtn.disabled = false;
+                    createTeamBtn.textContent = 'Create Team';
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showMessage('Registration failed. Please check your connection and try again.', 'error');
+                createTeamBtn.classList.remove('loading');
+                createTeamBtn.disabled = false;
+                createTeamBtn.textContent = 'Create Team';
+            }
+        });
+
+        // Password input event listeners
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            
+            if (password.length === 0) {
+                passwordStrengthDiv.style.display = 'none';
+                passwordInput.classList.remove('error', 'success');
+                reqLength.className = 'requirement';
+                reqLength.innerHTML = '<span class="requirement-icon">○</span> At least 6 characters';
+                reqSpecial.className = 'requirement';
+                reqSpecial.innerHTML = '<span class="requirement-icon">○</span> At least 1 special character (!@#$%^&* etc.)';
+            } else {
+                const strength = checkPasswordStrength(password);
+                passwordStrengthDiv.textContent = strength.message;
+                passwordStrengthDiv.className = `password-strength ${strength.level}`;
+                
+                if (strength.level === 'weak') {
+                    passwordInput.classList.add('error');
+                    passwordInput.classList.remove('success');
+                } else {
+                    passwordInput.classList.remove('error');
+                    passwordInput.classList.add('success');
+                }
+            }
+            
+            checkPasswordMatch();
+            validateForm();
+        });
+
+        confirmPasswordInput.addEventListener('input', function() {
+            checkPasswordMatch();
+            validateForm();
+        });
+
+        // Add input event listeners to all form fields
+        document.querySelectorAll('#leaderRegisterForm input').forEach(input => {
+            input.addEventListener('input', validateForm);
+        });
+
+        // Auto-format manual token input to accept only numbers
+        document.getElementById('manualTokenInput')?.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
+        });
+
+        // Enter key support for manual verification
+        document.getElementById('manualTokenInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyManualToken();
+            }
+        });
+
+        // Initialize form validation
         validateForm();
+
+        // Service worker check for production
+        if ('serviceWorker' in navigator && window.location.hostname !== 'localhost') {
+            navigator.serviceWorker.register('/sw.js').catch(console.error);
+        }
     </script>
 </body>
 </html>
