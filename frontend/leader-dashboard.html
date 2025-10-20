@@ -460,7 +460,7 @@
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:3000/api';
+        const API_BASE = '/api';
         let currentUser = null;
         let teamMembers = [];
         let allTasks = [];
@@ -559,50 +559,11 @@
                 });
             });
 
-          // Logout
-document.getElementById('logoutBtn').addEventListener('click', function() {
-    showLogoutConfirmation();
-});
-
-function showLogoutConfirmation() {
-    // Create confirmation modal
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.style.display = 'block';
-    modal.innerHTML = `
-        <div class="modal-content" style="max-width: 400px;">
-            <div class="modal-header">
-                <h3>Confirm Logout</h3>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to logout?</p>
-            </div>
-            <div class="modal-footer" style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-                <button class="btn btn-outline" id="cancelLogout">Cancel</button>
-                <button class="btn btn-danger" id="confirmLogout">Logout</button>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    // Add event listeners
-    document.getElementById('cancelLogout').addEventListener('click', function() {
-        document.body.removeChild(modal);
-    });
-    
-    document.getElementById('confirmLogout').addEventListener('click', function() {
-        localStorage.removeItem('user');
-        window.location.href = 'index.html';
-    });
-    
-    // Close modal when clicking outside
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            document.body.removeChild(modal);
-        }
-    });
-}
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                localStorage.removeItem('user');
+                window.location.href = 'index.html';
+            });
 
             // Performance search functionality
             document.getElementById('performanceSearch').addEventListener('input', function() {
