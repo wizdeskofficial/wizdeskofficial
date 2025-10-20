@@ -3,1375 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Member Dashboard - WizDesk</title>
-    <link rel="stylesheet" href="member.css">
+    <title>Register as Member - WizDesk</title>
+    <style>
+        /* All your existing CSS goes here - no changes needed */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .form-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .form-card h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input.error { border-color: #dc3545; }
+        input.success { border-color: #28a745; }
+        
+        .password-match { display: none; font-size: 14px; margin-top: 5px; padding: 5px 10px; border-radius: 5px; }
+        .password-match.error { display: block; color: #dc3545; background: #f8d7da; }
+        .password-match.success { display: block; color: #155724; background: #d4edda; }
+
+        .password-strength { margin-top: 5px; font-size: 14px; padding: 5px 10px; border-radius: 5px; display: none; }
+        .password-strength.weak { display: block; color: #721c24; background: #f8d7da; }
+        .password-strength.medium { display: block; color: #856404; background: #fff3cd; }
+        .password-strength.strong { display: block; color: #155724; background: #d4edda; }
+
+        .password-requirements { font-size: 12px; color: #666; margin-top: 5px; padding: 10px; background: #f8f9fa; border-radius: 5px; border-left: 3px solid #667eea; }
+        .requirement { display: flex; align-items: center; margin: 3px 0; }
+        .requirement.met { color: #28a745; }
+        .requirement.unmet { color: #dc3545; }
+        .requirement-icon { margin-right: 8px; font-weight: bold; }
+
+        .btn-primary { width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-top: 10px; }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .btn-secondary { width: 100%; padding: 12px; background: #6c757d; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-top: 10px; }
+        .btn-secondary:hover { background: #5a6268; transform: translateY(-2px); }
+
+        .verification-sent-message { display: none; text-align: center; padding: 30px; background: #e7f3ff; border-radius: 15px; border: 1px solid #b3d9ff; }
+        .verification-sent-message h3 { color: #004085; margin-bottom: 15px; }
+        .verification-sent-message p { color: #004085; margin-bottom: 10px; }
+        .verification-sent-message .icon { font-size: 3rem; margin-bottom: 15px; }
+        
+        .info-box { background: #e7f3ff; border: 1px solid #b3d9ff; border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: center; }
+        .info-box p { color: #0066cc; margin: 0; font-size: 0.9rem; }
+        
+        .message { position: fixed; top: 20px; right: 20px; padding: 15px 25px; border-radius: 10px; color: white; font-weight: 500; z-index: 10000; box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .message.success { background: linear-gradient(135deg, #28a745, #20c997); }
+        .message.error { background: linear-gradient(135deg, #dc3545, #e83e8c); }
+        
+        .back-link { text-align: center; margin-top: 20px; }
+        .back-link a { color: #667eea; text-decoration: none; font-weight: 500; }
+        .back-link a:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
     <div class="container">
-        <!-- Sidebar Navigation -->
-        <div class="sidebar">
-            <div class="logo">
-                <h1>WizDesk</h1>
-                <p>Member Dashboard</p>
-            </div>
-            <ul class="nav-links">
-                <li class="active" data-tab="overview">
-                    <span class="nav-icon">📊</span>
-                    <span>Overview</span>
-                </li>
-                <li data-tab="new-tasks">
-                    <span class="nav-icon">🆕</span>
-                    <span>New Tasks</span>
-                </li>
-                <li data-tab="assigned-tasks">
-                    <span class="nav-icon">📋</span>
-                    <span>My Tasks</span>
-                </li>
-                <li data-tab="active-tasks">
-                    <span class="nav-icon">⚡</span>
-                    <span>In Progress</span>
-                </li>
-                <li data-tab="completed-tasks">
-                    <span class="nav-icon">✅</span>
-                    <span>Completed</span>
-                </li>
-                <li data-tab="team-tasks">
-                    <span class="nav-icon">👥</span>
-                    <span>Team Tasks</span>
-                </li>
-            </ul>
-        </div>
+        <header>
+            <h1>WizDesk</h1>
+            <p>Join Your Team</p>
+        </header>
 
-        <!-- Main Content Area -->
-        <div class="main-content">
-            <div class="header">
-                <div class="header-left">
-                    <h1>Task Management</h1>
-                    <p>Manage your assigned tasks and collaborate with your team</p>
+        <div class="form-container">
+            <div class="form-card">
+                
+                <div id="verificationSentMessage" class="verification-sent-message">
+                    <div class="icon">📧</div>
+                    <h3>Check Your Inbox!</h3>
+                    <p>We've sent a verification link to <strong id="sentToEmail">your email</strong>.</p>
+                    <p>Click the link in the email to complete your registration and join team <strong id="joiningTeamName"></strong>.</p>
+                    <p style="margin-top: 20px; font-size: 0.9rem; color: #6c757d;">You can close this page.</p>
                 </div>
-                <div class="user-info">
-                    <div class="user-details">
-                        <span class="user-name" id="userName">Loading...</span>
-                        <span class="user-role">Team Member</span>
-                    </div>
-                    <span class="team-code" id="teamCodeDisplay"></span>
-                    <button id="logoutBtn" class="btn btn-danger">Logout</button>
-                </div>
-            </div>
 
-            <div class="content-area">
-                <!-- ===== OVERVIEW TAB ===== -->
-                <div id="overview" class="tab-content active">
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-number" id="totalAssigned">0</div>
-                            <div>Total Assigned</div>
-                        </div>
-                        <div class="stat-card inprogress">
-                            <div class="stat-number" id="inProgressCount">0</div>
-                            <div>In Progress</div>
-                        </div>
-                        <div class="stat-card completed">
-                            <div class="stat-number" id="completedCount">0</div>
-                            <div>Completed</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="availableTasks">0</div>
-                            <div>Available Tasks</div>
-                        </div>
+                <div id="registrationContainer">
+                    <h2>Register as Team Member</h2>
+                    <div class="info-box">
+                        <p>💡 Ask your Team Leader for the Team Code to join their team.</p>
                     </div>
-
-                    <div class="section">
-                        <h2>📋 My Recent Tasks</h2>
-                        <div id="recentTasks" class="task-list">
-                            <div class="empty-state">
-                                <div class="icon">📝</div>
-                                <h3>No tasks yet</h3>
-                                <p>Your assigned tasks will appear here</p>
+                    <form id="memberRegisterForm">
+                        <div class="form-group">
+                            <input type="text" id="memberName" placeholder="Your Full Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="memberEmail" placeholder="Email Address" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="memberPassword" placeholder="Password" required minlength="6">
+                            <div id="passwordStrength" class="password-strength"></div>
+                            <div class="password-requirements">
+                                <div class="requirement unmet" id="reqLength"><span class="requirement-icon">○</span> At least 6 characters</div>
+                                <div class="requirement unmet" id="reqSpecial"><span class="requirement-icon">○</span> At least 1 special character</div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="section">
-                        <h2>🎯 Quick Actions</h2>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                            <button class="btn btn-primary" onclick="showTab('new-tasks')">
-                                🆕 View New Tasks
-                            </button>
-                            <button class="btn btn-warning" onclick="showTab('active-tasks')">
-                                ⚡ Continue Working
-                            </button>
-                            <button class="btn btn-success" onclick="showTab('completed-tasks')">
-                                ✅ View Completed
-                            </button>
+                        <div class="form-group">
+                            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                            <div id="passwordMatch" class="password-match"></div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- ===== NEW TASKS TAB ===== -->
-                <div id="new-tasks" class="tab-content" style="display: none;">
-                    <div class="section">
-                        <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                            <h2>🆕 Available Tasks</h2>
-                            <button class="btn btn-primary" onclick="loadNewTasks()">
-                                🔄 Refresh
-                            </button>
+                        <div class="form-group">
+                            <input type="text" id="memberTeamCode" placeholder="Team Code (from your leader)" required>
                         </div>
-                        <p style="color: #666; margin-bottom: 20px;">These tasks are available for any team member to take. Click "Take Task" to assign it to yourself.</p>
-                        <div id="newTasksList" class="task-list">
-                            <!-- New tasks will be loaded here -->
-                        </div>
+                        <button type="submit" class="btn-primary" id="verifyEmailBtn">
+                            Send Verification Email
+                        </button>
+                    </form>
+                    <div style="margin-top: 20px;">
+                        <button onclick="window.location.href='index.html'" class="btn-secondary">Back to Login</button>
                     </div>
-                </div>
-
-                <!-- ===== ASSIGNED TASKS TAB ===== -->
-                <div id="assigned-tasks" class="tab-content" style="display: none;">
-                    <div class="section">
-                        <h2>📋 My Assigned Tasks</h2>
-                        <div id="assignedTasksList" class="task-list">
-                            <!-- Assigned tasks will be loaded here -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ===== ACTIVE TASKS TAB ===== -->
-                <div id="active-tasks" class="tab-content" style="display: none;">
-                    <div class="section">
-                        <h2>⚡ Tasks In Progress</h2>
-                        <div id="activeTasksList" class="task-list">
-                            <!-- Active tasks will be loaded here -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ===== COMPLETED TASKS TAB ===== -->
-                <div id="completed-tasks" class="tab-content" style="display: none;">
-                    <div class="section">
-                        <h2>✅ Completed Tasks</h2>
-                        <div id="completedTasksList" class="task-list">
-                            <!-- Completed tasks will be loaded here -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ===== TEAM TASKS TAB ===== -->
-                <div id="team-tasks" class="tab-content" style="display: none;">
-                    <div class="section">
-                        <h2>👥 All Team Tasks</h2>
-                        <p style="color: #666; margin-bottom: 20px;">View all tasks in your team, their progress, and who is working on them.</p>
-                        <div id="teamTasksList" class="task-list">
-                            <!-- Team tasks will be loaded here -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== MODALS ===== -->
-    
-    <!-- Task Details Modal -->
-    <div id="taskDetailsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Task Details</h2>
-                <span class="close" onclick="closeModal('taskDetailsModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div id="taskDetailsContent">
-                    <!-- Task details will be loaded here -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Confirmation Modal -->
-    <div id="confirmationModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="confirmationTitle">Confirm Action</h2>
-                <span class="close" onclick="closeModal('confirmationModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <p id="confirmationMessage">Are you sure you want to perform this action?</p>
-                <div class="confirmation-actions">
-                    <button id="confirmCancel" class="btn btn-danger" style="flex: 1;">
-                        Cancel
-                    </button>
-                    <button id="confirmAction" class="btn btn-success" style="flex: 1;">
-                        Confirm
-                    </button>
+                    <p class="back-link">
+                        Are you a Team Leader? <a href="register-leader.html">Create a team here</a>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // ===== CONFIGURATION =====
-        const API_BASE = '/api';
-        let currentUser = null;
-        let refreshInterval = null;
-        let currentAction = null;
-        let currentSubtaskId = null;
-        let currentTaskTitle = null;
-
-        // ===== INITIALIZATION =====
-        document.addEventListener('DOMContentLoaded', function() {
-            const userData = localStorage.getItem('user');
-            if (!userData) {
-                window.location.href = 'index.html';
-                return;
-            }
-
-            currentUser = JSON.parse(userData);
-            
-            // For member dashboard - check if user is actually a member and approved
-            if (window.location.pathname.includes('/member-dashboard') && 
-                (currentUser.role !== 'member' || currentUser.status !== 'approved')) {
-                localStorage.removeItem('user');
-                window.location.href = 'index.html';
-                return;
-            }
-            
-            initializeDashboard();
-            loadMemberData();
-            startAutoRefresh();
-        });
-
-        function initializeDashboard() {
-            document.getElementById('userName').textContent = currentUser.name;
-            document.getElementById('teamCodeDisplay').textContent = currentUser.team_code;
-
-            // Navigation event listeners
-            document.querySelectorAll('.nav-links li').forEach(item => {
-                item.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-tab');
-                    showTab(tabId);
-                });
-            });
-
-            // Logout with confirmation
-            document.getElementById('logoutBtn').addEventListener('click', function() {
-                showConfirmation(
-                    'Confirm Logout',
-                    'Are you sure you want to logout?',
-                    'logout'
-                );
-            });
-
-            // Confirmation modal handlers
-            document.getElementById('confirmCancel').addEventListener('click', function() {
-                closeModal('confirmationModal');
-                resetConfirmation();
-            });
-
-            document.getElementById('confirmAction').addEventListener('click', function() {
-                handleConfirmedAction();
-            });
-        }
-
-        // ===== TAB MANAGEMENT =====
-        function showTab(tabId) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.style.display = 'none';
-            });
-            document.querySelectorAll('.nav-links li').forEach(li => {
-                li.classList.remove('active');
-            });
-            
-            // Show selected tab
-            document.getElementById(tabId).style.display = 'block';
-            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
-            
-            // Load specific data for tabs
-            switch(tabId) {
-                case 'new-tasks':
-                    loadNewTasks();
-                    break;
-                case 'assigned-tasks':
-                    loadAssignedTasks();
-                    break;
-                case 'active-tasks':
-                    loadActiveTasks();
-                    break;
-                case 'completed-tasks':
-                    loadCompletedTasks();
-                    break;
-                case 'team-tasks':
-                    loadTeamTasks();
-                    break;
-            }
-        }
-
-        // ===== AUTO REFRESH =====
-        function startAutoRefresh() {
-            // Refresh data every 10 seconds for real-time updates
-            refreshInterval = setInterval(loadMemberData, 10000);
-            
-            // Also refresh the current tab every 20 seconds
-            setInterval(() => {
-                const activeTab = document.querySelector('.tab-content[style="display: block"]') || 
-                                document.querySelector('.tab-content.active');
-                if (activeTab) {
-                    const tabId = activeTab.id;
-                    switch(tabId) {
-                        case 'new-tasks':
-                            loadNewTasks();
-                            break;
-                        case 'assigned-tasks':
-                            loadAssignedTasks();
-                            break;
-                        case 'active-tasks':
-                            loadActiveTasks();
-                            break;
-                        case 'completed-tasks':
-                            loadCompletedTasks();
-                            break;
-                        case 'team-tasks':
-                            loadTeamTasks();
-                            break;
-                    }
-                }
-            }, 20000);
-        }
-
-        // ===== OVERVIEW TAB FUNCTIONS =====
-        async function loadMemberData() {
-            try {
-                // Load overview data with timeout
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 8000);
-                
-                const [myTasksResponse, teamTasksResponse] = await Promise.all([
-                    fetch(`${API_BASE}/tasks/user/${currentUser.id}/subtasks`, { signal: controller.signal }),
-                    fetch(`${API_BASE}/tasks/team/${currentUser.team_code}`, { signal: controller.signal })
-                ]);
-
-                clearTimeout(timeoutId);
-
-                if (!myTasksResponse.ok || !teamTasksResponse.ok) {
-                    throw new Error('Failed to fetch data');
-                }
-
-                const myTasks = await myTasksResponse.json();
-                const teamTasks = await teamTasksResponse.json();
-
-                // Calculate available tasks count
-                const availableTasksCount = calculateAvailableTasksCount(teamTasks);
-                updateOverviewStats(myTasks, availableTasksCount);
-                displayRecentTasks(myTasks);
-                
-            } catch (error) {
-                console.error('Error loading member data:', error);
-                if (error.name === 'AbortError') {
-                    showMessage('Request timeout - server is busy', 'error');
-                } else {
-                    showMessage('Failed to load dashboard data', 'error');
-                }
-            }
-        }
-
-        function calculateAvailableTasksCount(teamTasks) {
-            let count = 0;
-            teamTasks.forEach(task => {
-                if (task.subtasks) {
-                    count += task.subtasks.filter(subtask => 
-                        subtask.status === 'available' || 
-                        (subtask.assigned_to === currentUser.id && getCorrectProgress(subtask.progress) === 'not_started')
-                    ).length;
-                }
-            });
-            return count;
-        }
-
-        function updateOverviewStats(myTasks, availableTasksCount) {
-            const totalAssigned = myTasks.length;
-            const inProgressCount = myTasks.filter(task => 
-                getCorrectProgress(task.progress) === 'in_progress' || 
-                getCorrectProgress(task.progress) === 'testing'
-            ).length;
-            const completedCount = myTasks.filter(task => getCorrectProgress(task.progress) === 'completed').length;
-
-            document.getElementById('totalAssigned').textContent = totalAssigned;
-            document.getElementById('inProgressCount').textContent = inProgressCount;
-            document.getElementById('completedCount').textContent = completedCount;
-            document.getElementById('availableTasks').textContent = availableTasksCount;
-        }
-
-        function displayRecentTasks(tasks) {
-            const container = document.getElementById('recentTasks');
-            const recentTasks = tasks.slice(0, 3); // Show only 3 recent tasks
-            
-            if (recentTasks.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">📝</div>
-                        <h3>No tasks yet</h3>
-                        <p>Your assigned tasks will appear here</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = recentTasks.map(task => {
-                const displayProgress = getCorrectProgress(task.progress);
-                
-                return `
-                    <div class="task-card">
-                        <div class="task-header">
-                            <div>
-                                <div class="task-title">${task.task_title}</div>
-                                <div class="task-description">${task.title}</div>
-                            </div>
-                            <span class="status-badge status-${displayProgress}">${getProgressDisplay(displayProgress)}</span>
-                        </div>
-                        
-                        <div class="task-actions">
-                            ${getActionButton(task.id, displayProgress, task.title, task.status, task.assigned_to)}
-                            <button class="btn btn-sm btn-outline" onclick="viewTaskDetails(${task.id})">
-                                View Details
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // ===== NEW TASKS TAB FUNCTIONS =====
-        async function loadNewTasks() {
-            try {
-                // Fetch all team tasks with their subtasks
-                const response = await fetch(`${API_BASE}/tasks/team/${currentUser.team_code}`);
-                
-                if (!response.ok) {
-                    throw new Error('Failed to fetch tasks');
-                }
-
-                const tasks = await response.json();
-                displayNewTasks(tasks);
-            } catch (error) {
-                console.error('Error loading new tasks:', error);
-                showMessage('Failed to load available tasks', 'error');
-                
-                const container = document.getElementById('newTasksList');
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">⚠️</div>
-                        <h3>Error Loading Tasks</h3>
-                        <p>Unable to load available tasks. Please try again.</p>
-                        <button class="btn btn-primary" onclick="loadNewTasks()" style="margin-top: 15px;">
-                            Try Again
-                        </button>
-                    </div>
-                `;
-            }
-        }
-
-        function displayNewTasks(tasks) {
-            const container = document.getElementById('newTasksList');
-            
-            // Filter tasks that have available subtasks
-            const tasksWithAvailableSubtasks = tasks.filter(task => 
-                task.subtasks && task.subtasks.some(subtask => 
-                    subtask.status === 'available' || 
-                    (subtask.assigned_to === currentUser.id && getCorrectProgress(subtask.progress) === 'not_started')
-                )
-            );
-            
-            if (tasksWithAvailableSubtasks.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">🎉</div>
-                        <h3>No new tasks available</h3>
-                        <p>All tasks are currently assigned. Check back later!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = tasksWithAvailableSubtasks.map(task => {
-                // Filter available subtasks for this task
-                const availableSubtasks = task.subtasks.filter(subtask => 
-                    subtask.status === 'available' || 
-                    (subtask.assigned_to === currentUser.id && getCorrectProgress(subtask.progress) === 'not_started')
-                );
-                
-                if (availableSubtasks.length === 0) return '';
-                
-                const progress = calculateTaskProgress(task);
-                const overallStatus = getOverallStatus(task);
-                
-                return `
-                    <div class="task-card">
-                        <div class="task-header">
-                            <div>
-                                <div class="task-title">${task.title || 'Untitled Task'}</div>
-                                <div class="task-description">${task.description || 'No description provided'}</div>
-                            </div>
-                            <span class="status-badge status-${overallStatus}">${overallStatus.toUpperCase().replace('_', ' ')}</span>
-                        </div>
-                        
-                        <div class="task-meta">
-                            <div class="meta-item">
-                                <span>👤</span>
-                                <span>Created by: ${task.created_by_name || 'Unknown'}</span>
-                            </div>
-                            <div class="meta-item">
-                                <span>📊</span>
-                                <span>Progress: ${progress}%</span>
-                            </div>
-                            <div class="meta-item">
-                                <span>🔢</span>
-                                <span>Available Subtasks: ${availableSubtasks.length}</span>
-                            </div>
-                        </div>
-
-                        <div class="progress-section">
-                            <div class="progress-info">
-                                <span>Team Progress</span>
-                                <span>${progress}%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress" style="width: ${progress}%"></div>
-                            </div>
-                        </div>
-
-                        <div style="margin-top: 15px;">
-                            <strong>Available Subtasks:</strong>
-                            <div class="subtask-list">
-                                ${availableSubtasks.map(subtask => {
-                                    const displayProgress = getCorrectProgress(subtask.progress);
-                                    const isAssignedToMe = subtask.assigned_to === currentUser.id;
-                                    
-                                    let assignmentInfo = '';
-                                    if (subtask.assigned_to_name) {
-                                        assignmentInfo = `👤 ${subtask.assigned_to_name}`;
-                                        if (isAssignedToMe) {
-                                            assignmentInfo += ' (You)';
-                                        }
-                                    } else {
-                                        assignmentInfo = '🆕 Available';
-                                    }
-
-                                    return `
-                                        <div class="subtask-item">
-                                            <div class="subtask-info">
-                                                <div class="subtask-title">${subtask.title || 'Untitled Subtask'}</div>
-                                                <div class="subtask-description">${subtask.description || 'No description'}</div>
-                                            </div>
-                                            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                                                <span class="status-badge status-${displayProgress}">${getProgressDisplay(displayProgress)}</span>
-                                                <span style="font-size: 0.8rem; color: #666;">
-                                                    ${assignmentInfo}
-                                                </span>
-                                                ${getActionButton(subtask.id, displayProgress, subtask.title, subtask.status, subtask.assigned_to)}
-                                                <button class="btn btn-sm btn-outline" onclick="viewTaskDetails(${subtask.id})">
-                                                    Details
-                                                </button>
-                                            </div>
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // ===== ASSIGNED TASKS TAB FUNCTIONS =====
-        async function loadAssignedTasks() {
-            try {
-                const response = await fetch(`${API_BASE}/tasks/user/${currentUser.id}/subtasks`);
-                
-                if (!response.ok) {
-                    throw new Error('Failed to fetch assigned tasks');
-                }
-
-                const tasks = await response.json();
-                displayAssignedTasks(tasks);
-            } catch (error) {
-                console.error('Error loading assigned tasks:', error);
-                showMessage('Failed to load assigned tasks', 'error');
-                
-                const container = document.getElementById('assignedTasksList');
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">⚠️</div>
-                        <h3>Error Loading Tasks</h3>
-                        <p>Unable to load your assigned tasks. Please try again.</p>
-                        <button class="btn btn-primary" onclick="loadAssignedTasks()" style="margin-top: 15px;">
-                            Try Again
-                        </button>
-                    </div>
-                `;
-            }
-        }
-
-        function displayAssignedTasks(tasks) {
-            const container = document.getElementById('assignedTasksList');
-            
-            if (tasks.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">📝</div>
-                        <h3>No tasks assigned</h3>
-                        <p>You don't have any assigned tasks yet</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Group tasks by main task
-            const tasksByMainTask = {};
-            tasks.forEach(task => {
-                if (!tasksByMainTask[task.task_title]) {
-                    tasksByMainTask[task.task_title] = [];
-                }
-                tasksByMainTask[task.task_title].push(task);
-            });
-
-            container.innerHTML = Object.entries(tasksByMainTask).map(([mainTask, subtasks]) => {
-                return `
-                    <div class="task-card">
-                        <div class="task-header">
-                            <div>
-                                <div class="task-title">${mainTask}</div>
-                                <div class="task-description">${subtasks[0].task_description || 'No description'}</div>
-                            </div>
-                            <span class="status-badge status-${getOverallProgress(subtasks)}">${getOverallProgress(subtasks).toUpperCase()}</span>
-                        </div>
-                        
-                        <div class="subtask-list">
-                            ${subtasks.map(subtask => {
-                                const displayProgress = getCorrectProgress(subtask.progress);
-                                return `
-                                    <div class="subtask-item">
-                                        <div class="subtask-info">
-                                            <div class="subtask-title">${subtask.title}</div>
-                                            <div class="subtask-description">${subtask.description || 'No description'}</div>
-                                        </div>
-                                        <div style="display: flex; align-items: center; gap: 10px;">
-                                            <span class="status-badge status-${displayProgress}">${getProgressDisplay(displayProgress)}</span>
-                                            ${getActionButton(subtask.id, displayProgress, subtask.title, subtask.status, subtask.assigned_to)}
-                                            <button class="btn btn-sm btn-outline" onclick="viewTaskDetails(${subtask.id})">
-                                                Details
-                                            </button>
-                                        </div>
-                                    </div>
-                                `;
-                            }).join('')}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function getOverallProgress(subtasks) {
-            if (subtasks.every(st => getCorrectProgress(st.progress) === 'completed')) return 'completed';
-            if (subtasks.some(st => getCorrectProgress(st.progress) === 'in_progress' || getCorrectProgress(st.progress) === 'testing')) return 'in_progress';
-            return 'not_started';
-        }
-
-        // ===== ACTIVE TASKS TAB FUNCTIONS =====
-        async function loadActiveTasks() {
-            try {
-                const response = await fetch(`${API_BASE}/tasks/user/${currentUser.id}/subtasks`);
-                
-                if (!response.ok) {
-                    throw new Error('Failed to fetch tasks');
-                }
-
-                let tasks = await response.json();
-                
-                // Filter for active tasks (in_progress or testing)
-                const activeTasks = tasks.filter(task => 
-                    getCorrectProgress(task.progress) === 'in_progress' || 
-                    getCorrectProgress(task.progress) === 'testing'
-                );
-
-                displayActiveTasks(activeTasks);
-            } catch (error) {
-                console.error('Error loading active tasks:', error);
-                showMessage('Failed to load active tasks', 'error');
-                
-                const container = document.getElementById('activeTasksList');
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">⚠️</div>
-                        <h3>Error Loading Tasks</h3>
-                        <p>Unable to load active tasks. Please try again.</p>
-                        <button class="btn btn-primary" onclick="loadActiveTasks()" style="margin-top: 15px;">
-                            Try Again
-                        </button>
-                    </div>
-                `;
-            }
-        }
-
-        function displayActiveTasks(tasks) {
-            const container = document.getElementById('activeTasksList');
-            
-            if (tasks.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">⚡</div>
-                        <h3>No active tasks</h3>
-                        <p>You don't have any tasks in progress</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Group tasks by main task
-            const tasksByMainTask = {};
-            tasks.forEach(task => {
-                if (!tasksByMainTask[task.task_title]) {
-                    tasksByMainTask[task.task_title] = [];
-                }
-                tasksByMainTask[task.task_title].push(task);
-            });
-
-            container.innerHTML = Object.entries(tasksByMainTask).map(([mainTask, subtasks]) => {
-                return `
-                    <div class="task-card">
-                        <div class="task-header">
-                            <div>
-                                <div class="task-title">${mainTask}</div>
-                                <div class="task-description">${subtasks[0].task_description || 'No description'}</div>
-                            </div>
-                            <span class="status-badge status-in-progress">IN PROGRESS</span>
-                        </div>
-                        
-                        <div class="subtask-list">
-                            ${subtasks.map(subtask => {
-                                const displayProgress = getCorrectProgress(subtask.progress);
-                                return `
-                                    <div class="subtask-item">
-                                        <div class="subtask-info">
-                                            <div class="subtask-title">${subtask.title}</div>
-                                            <div class="subtask-description">${subtask.description || 'No description'}</div>
-                                        </div>
-                                        <div style="display: flex; align-items: center; gap: 10px;">
-                                            <span class="status-badge status-${displayProgress}">${getProgressDisplay(displayProgress)}</span>
-                                            ${getActionButton(subtask.id, displayProgress, subtask.title, subtask.status, subtask.assigned_to)}
-                                            <button class="btn btn-sm btn-outline" onclick="viewTaskDetails(${subtask.id})">
-                                                Details
-                                            </button>
-                                        </div>
-                                    </div>
-                                `;
-                            }).join('')}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // ===== COMPLETED TASKS TAB FUNCTIONS =====
-        async function loadCompletedTasks() {
-            try {
-                const response = await fetch(`${API_BASE}/tasks/user/${currentUser.id}/subtasks`);
-                
-                if (!response.ok) {
-                    throw new Error('Failed to fetch tasks');
-                }
-
-                let tasks = await response.json();
-                const completedTasks = tasks.filter(task => getCorrectProgress(task.progress) === 'completed');
-
-                displayCompletedTasks(completedTasks);
-            } catch (error) {
-                console.error('Error loading completed tasks:', error);
-                showMessage('Failed to load completed tasks', 'error');
-                
-                const container = document.getElementById('completedTasksList');
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">⚠️</div>
-                        <h3>Error Loading Tasks</h3>
-                        <p>Unable to load completed tasks. Please try again.</p>
-                        <button class="btn btn-primary" onclick="loadCompletedTasks()" style="margin-top: 15px;">
-                            Try Again
-                        </button>
-                    </div>
-                `;
-            }
-        }
-
-        function displayCompletedTasks(tasks) {
-            const container = document.getElementById('completedTasksList');
-            
-            if (tasks.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">✅</div>
-                        <h3>No completed tasks</h3>
-                        <p>You haven't completed any tasks yet</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Group tasks by main task
-            const tasksByMainTask = {};
-            tasks.forEach(task => {
-                if (!tasksByMainTask[task.task_title]) {
-                    tasksByMainTask[task.task_title] = [];
-                }
-                tasksByMainTask[task.task_title].push(task);
-            });
-
-            container.innerHTML = Object.entries(tasksByMainTask).map(([mainTask, subtasks]) => {
-                return `
-                    <div class="task-card completed">
-                        <div class="task-header">
-                            <div>
-                                <div class="task-title">${mainTask}</div>
-                                <div class="task-description">${subtasks[0].task_description || 'No description'}</div>
-                            </div>
-                            <span class="status-badge status-completed">COMPLETED</span>
-                        </div>
-                        
-                        <div class="subtask-list">
-                            ${subtasks.map(subtask => `
-                                <div class="subtask-item">
-                                    <div class="subtask-info">
-                                        <div class="subtask-title">${subtask.title}</div>
-                                        <div class="subtask-description">${subtask.description || 'No description'}</div>
-                                    </div>
-                                    <span class="status-badge status-completed">COMPLETED</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // ===== TEAM TASKS TAB FUNCTIONS =====
-        async function loadTeamTasks() {
-            try {
-                console.log('Loading team tasks for team:', currentUser.team_code);
-                
-                const response = await fetch(`${API_BASE}/tasks/team/${currentUser.team_code}`);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const tasks = await response.json();
-                console.log('Team tasks response:', tasks);
-                
-                displayTeamTasks(tasks);
-                
-            } catch (error) {
-                console.error('Error loading team tasks:', error);
-                showMessage('Failed to load team tasks: ' + error.message, 'error');
-                
-                const container = document.getElementById('teamTasksList');
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">⚠️</div>
-                        <h3>Error Loading Team Tasks</h3>
-                        <p>${error.message}</p>
-                        <p style="font-size: 0.8rem; margin-top: 10px;">Team Code: ${currentUser.team_code}</p>
-                        <button class="btn btn-primary" onclick="loadTeamTasks()" style="margin-top: 15px;">
-                            Try Again
-                        </button>
-                    </div>
-                `;
-            }
-        }
-
-        function displayTeamTasks(tasks) {
-            const container = document.getElementById('teamTasksList');
-            
-            if (!tasks || tasks.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">👥</div>
-                        <h3>No team tasks found</h3>
-                        <p>Your team hasn't created any tasks yet, or there are no tasks assigned to your team.</p>
-                        <p style="font-size: 0.8rem; margin-top: 10px;">Team: ${currentUser.team_code}</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = tasks.map(task => {
-                const progress = calculateTaskProgress(task);
-                const overallStatus = getOverallStatus(task);
-                
-                return `
-                    <div class="task-card">
-                        <div class="task-header">
-                            <div>
-                                <div class="task-title">${task.title || 'Untitled Task'}</div>
-                                <div class="task-description">${task.description || 'No description provided'}</div>
-                            </div>
-                            <span class="status-badge status-${overallStatus}">${overallStatus.toUpperCase().replace('_', ' ')}</span>
-                        </div>
-                        
-                        <div class="task-meta">
-                            <div class="meta-item">
-                                <span>👤</span>
-                                <span>Created by: ${task.created_by_name || 'Unknown'}</span>
-                            </div>
-                            <div class="meta-item">
-                                <span>📊</span>
-                                <span>Progress: ${progress}%</span>
-                            </div>
-                            <div class="meta-item">
-                                <span>🔢</span>
-                                <span>Total Subtasks: ${task.subtasks ? task.subtasks.length : 0}</span>
-                            </div>
-                        </div>
-
-                        <div class="progress-section">
-                            <div class="progress-info">
-                                <span>Team Progress</span>
-                                <span>${progress}%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress" style="width: ${progress}%"></div>
-                            </div>
-                        </div>
-
-                        ${task.subtasks && task.subtasks.length > 0 ? `
-                        <div style="margin-top: 15px;">
-                            <strong>Subtasks:</strong>
-                            <div class="subtask-list">
-                                ${task.subtasks.map(subtask => {
-                                    const displayProgress = getCorrectProgress(subtask.progress);
-                                    const isAssignedToMe = subtask.assigned_to === currentUser.id;
-                                    
-                                    let assignmentInfo = '';
-                                    if (subtask.assigned_to_name) {
-                                        assignmentInfo = `👤 ${subtask.assigned_to_name}`;
-                                        if (isAssignedToMe) {
-                                            assignmentInfo += ' (You)';
-                                        }
-                                    } else {
-                                        assignmentInfo = '🆕 Not assigned';
-                                    }
-
-                                    return `
-                                        <div class="subtask-item">
-                                            <div class="subtask-info">
-                                                <div class="subtask-title">${subtask.title || 'Untitled Subtask'}</div>
-                                                <div class="subtask-description">${subtask.description || 'No description'}</div>
-                                            </div>
-                                            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                                                <span class="status-badge status-${displayProgress}">${getProgressDisplay(displayProgress)}</span>
-                                                <span style="font-size: 0.8rem; color: #666;">
-                                                    ${assignmentInfo}
-                                                </span>
-                                                ${getActionButton(subtask.id, displayProgress, subtask.title, subtask.status, subtask.assigned_to)}
-                                                <button class="btn btn-sm btn-outline" onclick="viewTaskDetails(${subtask.id})">
-                                                    Details
-                                                </button>
-                                            </div>
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                        </div>
-                        ` : '<p style="color: #666; text-align: center; padding: 20px;">No subtasks available for this task.</p>'}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function calculateTaskProgress(task) {
-            if (!task.subtasks || task.subtasks.length === 0) return 0;
-            const completed = task.subtasks.filter(st => getCorrectProgress(st.progress) === 'completed').length;
-            return Math.round((completed / task.subtasks.length) * 100);
-        }
-
-        function getOverallStatus(task) {
-            if (!task.subtasks || task.subtasks.length === 0) return 'available';
-            
-            const allCompleted = task.subtasks.every(st => getCorrectProgress(st.progress) === 'completed');
-            const someInProgress = task.subtasks.some(st => 
-                getCorrectProgress(st.progress) === 'in_progress' || 
-                getCorrectProgress(st.progress) === 'testing'
-            );
-            const someAssigned = task.subtasks.some(st => 
-                st.assigned_to !== null && getCorrectProgress(st.progress) !== 'completed'
-            );
-            const someAvailable = task.subtasks.some(st => st.status === 'available');
-
-            if (allCompleted) return 'completed';
-            if (someInProgress) return 'in_progress';
-            if (someAssigned) return 'assigned';
-            if (someAvailable) return 'available';
-            
-            return 'available';
-        }
-
-        // ===== TASK MANAGEMENT FUNCTIONS =====
-        function getActionButton(subtaskId, progress, taskTitle, status, assignedTo) {
-            const displayProgress = getCorrectProgress(progress);
-            const isAssignedToMe = assignedTo === currentUser.id;
-            const isAvailable = status === 'available';
-            
-            // If task is completed, show completed badge
-            if (displayProgress === 'completed') {
-                return `<span class="status-badge status-completed">COMPLETED</span>`;
-            }
-            
-            // If task is assigned to someone else and not available
-            if (assignedTo && !isAssignedToMe && !isAvailable) {
-                return `<span class="status-badge status-assigned">ASSIGNED TO OTHER</span>`;
-            }
-            
-            // If task is available for taking
-            if (isAvailable && !assignedTo) {
-                return `<button class="btn btn-primary btn-sm" onclick="confirmTakeTask(${subtaskId}, '${escapeHtml(taskTitle)}')">Take Task</button>`;
-            }
-            
-            // If task is assigned to me
-            if (isAssignedToMe) {
-                switch(displayProgress) {
-                    case 'not_started':
-                    case 'assigned':
-                        return `<button class="btn btn-warning btn-sm" onclick="confirmStartTask(${subtaskId}, '${escapeHtml(taskTitle)}')">Start Task</button>`;
-                    case 'in_progress':
-                    case 'testing':
-                        return `<button class="btn btn-success btn-sm" onclick="confirmCompleteTask(${subtaskId}, '${escapeHtml(taskTitle)}')">Complete Task</button>`;
-                    default:
-                        return `<button class="btn btn-warning btn-sm" onclick="confirmStartTask(${subtaskId}, '${escapeHtml(taskTitle)}')">Start Task</button>`;
-                }
-            }
-            
-            // Default fallback
-            return `<span class="status-badge status-${displayProgress}">${getProgressDisplay(displayProgress)}</span>`;
-        }
-
-        function confirmTakeTask(subtaskId, taskTitle) {
-            showConfirmation(
-                'Take Task',
-                `Are you sure you want to take the task "${taskTitle}"? Once taken, other team members cannot claim it.`,
-                'take_task',
-                subtaskId,
-                taskTitle
-            );
-        }
-
-        function confirmStartTask(subtaskId, taskTitle) {
-            showConfirmation(
-                'Start Task',
-                `Are you sure you want to start working on "${taskTitle}"?`,
-                'start_task',
-                subtaskId,
-                taskTitle
-            );
-        }
-
-        function confirmCompleteTask(subtaskId, taskTitle) {
-            showConfirmation(
-                'Complete Task',
-                `Are you sure you want to mark "${taskTitle}" as completed?`,
-                'complete_task',
-                subtaskId,
-                taskTitle
-            );
-        }
-
-        function showConfirmation(title, message, action, subtaskId = null, taskTitle = null) {
-            document.getElementById('confirmationTitle').textContent = title;
-            document.getElementById('confirmationMessage').textContent = message;
-            currentAction = action;
-            currentSubtaskId = subtaskId;
-            currentTaskTitle = taskTitle;
-            showModal('confirmationModal');
-        }
-
-        function handleConfirmedAction() {
-            switch(currentAction) {
-                case 'take_task':
-                    takeSubtask(currentSubtaskId);
-                    break;
-                case 'start_task':
-                    startTask(currentSubtaskId);
-                    break;
-                case 'complete_task':
-                    completeTask(currentSubtaskId);
-                    break;
-                case 'logout':
-                    performLogout();
-                    break;
-            }
-            closeModal('confirmationModal');
-            resetConfirmation();
-        }
-
-        function resetConfirmation() {
-            currentAction = null;
-            currentSubtaskId = null;
-            currentTaskTitle = null;
-        }
-
-        async function takeSubtask(subtaskId) {
-            try {
-                const response = await fetch(`${API_BASE}/tasks/subtask/${subtaskId}/take`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        userId: currentUser.id
-                    })
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    showMessage('Task assigned to you successfully! You can now start working on it.', 'success');
-                    
-                    // Force immediate refresh of all tabs
-                    await forceRefreshAllTabs();
-                } else {
-                    showMessage(result.error, 'error');
-                }
-            } catch (error) {
-                console.error('Error taking task:', error);
-                showMessage('Failed to take task', 'error');
-            }
-        }
-
-        async function startTask(subtaskId) {
-            try {
-                await updateTaskProgress(subtaskId, 'in_progress');
-                showMessage('Task started successfully! Status: In Progress', 'success');
-                
-                // Force immediate refresh
-                await forceRefreshAllTabs();
-            } catch (error) {
-                console.error('Error starting task:', error);
-                showMessage('Failed to start task', 'error');
-            }
-        }
-
-        async function completeTask(subtaskId) {
-            try {
-                await updateTaskProgress(subtaskId, 'completed');
-                showMessage('Task completed successfully!', 'success');
-                
-                // Force immediate refresh
-                await forceRefreshAllTabs();
-            } catch (error) {
-                console.error('Error completing task:', error);
-                showMessage('Failed to complete task', 'error');
-            }
-        }
-
-        async function updateTaskProgress(subtaskId, progress) {
-            try {
-                const response = await fetch(`${API_BASE}/tasks/subtask/${subtaskId}/progress`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        progress: progress,
-                        userId: currentUser.id
-                    })
-                });
-
-                const result = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(result.error || 'Failed to update progress');
-                }
-                
-                return result;
-            } catch (error) {
-                console.error('Error updating progress:', error);
-                throw error;
-            }
-        }
-
-        // ===== TASK DETAILS FUNCTIONS =====
-        async function viewTaskDetails(subtaskId) {
-            try {
-                // First try to get subtask details from the subtask endpoint
-                let subtask;
-                try {
-                    const subtaskResponse = await fetch(`${API_BASE}/tasks/subtask/${subtaskId}`);
-                    if (subtaskResponse.ok) {
-                        subtask = await subtaskResponse.json();
-                    } else {
-                        throw new Error('Subtask not found');
-                    }
-                } catch (error) {
-                    // If subtask endpoint fails, get it from user's subtasks
-                    const userTasksResponse = await fetch(`${API_BASE}/tasks/user/${currentUser.id}/subtasks`);
-                    const userTasks = await userTasksResponse.json();
-                    subtask = userTasks.find(task => task.id == subtaskId);
-                    
-                    if (!subtask) {
-                        throw new Error('Task not found');
-                    }
-                }
-
-                const displayProgress = getCorrectProgress(subtask.progress);
-
-                document.getElementById('taskDetailsContent').innerHTML = `
-                    <div class="task-detail-item">
-                        <span class="task-detail-label">Main Task</span>
-                        <div class="task-detail-value">${subtask.task_title || subtask.title}</div>
-                    </div>
-                    
-                    <div class="task-detail-item">
-                        <span class="task-detail-label">Subtask</span>
-                        <div class="task-detail-value">${subtask.title}</div>
-                    </div>
-                    
-                    <div class="task-detail-item">
-                        <span class="task-detail-label">Description</span>
-                        <div class="task-detail-value">${subtask.description || 'No description provided'}</div>
-                    </div>
-                    
-                    <div class="task-detail-item">
-                        <span class="task-detail-label">Status</span>
-                        <div class="task-detail-value">
-                            <span class="status-badge status-${subtask.status}">${getStatusDisplay(subtask.status)}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="task-detail-item">
-                        <span class="task-detail-label">Progress</span>
-                        <div class="task-detail-value">
-                            <span class="status-badge status-${displayProgress}">${getProgressDisplay(displayProgress)}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="task-detail-item">
-                        <span class="task-detail-label">Assigned To</span>
-                        <div class="task-detail-value">${subtask.assigned_to_name || 'Not assigned'}</div>
-                    </div>
-                    
-                    <div class="task-detail-item">
-                        <span class="task-detail-label">Created</span>
-                        <div class="task-detail-value">${new Date(subtask.created_at).toLocaleString()}</div>
-                    </div>
-                    
-                    <div class="task-detail-item">
-                        <span class="task-detail-label">Last Updated</span>
-                        <div class="task-detail-value">${new Date(subtask.updated_at).toLocaleString()}</div>
-                    </div>
-                    
-                    <div class="task-detail-item">
-                        <div class="task-actions">
-                            ${getActionButton(subtask.id, displayProgress, subtask.title, subtask.status, subtask.assigned_to)}
-                        </div>
-                    </div>
-                `;
-
-                showModal('taskDetailsModal');
-            } catch (error) {
-                console.error('Error loading task details:', error);
-                showMessage('Failed to load task details', 'error');
-            }
-        }
-
-        // ===== UTILITY FUNCTIONS =====
-        function getCorrectProgress(progress) {
-            if (!progress) return 'not_started';
-            
-            const progressMap = {
-                'assigned': 'not_started',
-                'taken': 'not_started', 
-                'not_started': 'not_started',
-                'in_progress': 'in_progress',
-                'testing': 'testing',
-                'completed': 'completed'
-            };
-            
-            return progressMap[progress] || 'not_started';
-        }
-
-        function getStatusDisplay(status) {
-            const statusMap = {
-                'available': 'AVAILABLE',
-                'assigned': 'ASSIGNED',
-                'taken': 'IN PROGRESS',
-                'completed': 'COMPLETED'
-            };
-            return statusMap[status] || status.toUpperCase();
-        }
-
-        function getProgressDisplay(progress) {
-            const progressMap = {
-                'not_started': 'NOT STARTED',
-                'assigned': 'NOT STARTED',
-                'in_progress': 'IN PROGRESS',
-                'testing': 'TESTING',
-                'completed': 'COMPLETED'
-            };
-            return progressMap[progress] || progress.toUpperCase();
-        }
-
-        async function forceRefreshAllTabs() {
-            try {
-                // Refresh overview data
-                await loadMemberData();
-                
-                // Refresh all specific tabs
-                await Promise.all([
-                    loadNewTasks(),
-                    loadAssignedTasks(),
-                    loadActiveTasks(),
-                    loadCompletedTasks(),
-                    loadTeamTasks()
-                ]);
-                
-                console.log('All tabs refreshed successfully');
-            } catch (error) {
-                console.error('Error refreshing tabs:', error);
-            }
-        }
-
-        function performLogout() {
-            localStorage.removeItem('user');
-            window.location.href = 'index.html';
-        }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function showModal(modalId) {
-            document.getElementById(modalId).style.display = 'block';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        function showMessage(message, type) {
+        const API_BASE = '/api'; // This is correct for deployment
+
+        // --- DOM Elements ---
+        const memberRegisterForm = document.getElementById('memberRegisterForm');
+        const registrationContainer = document.getElementById('registrationContainer');
+        const verificationSentMessage = document.getElementById('verificationSentMessage');
+        const sentToEmail = document.getElementById('sentToEmail');
+        const joiningTeamName = document.getElementById('joiningTeamName');
+        const verifyEmailBtn = document.getElementById('verifyEmailBtn');
+        const passwordInput = document.getElementById('memberPassword');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordMatchDiv = document.getElementById('passwordMatch');
+        const passwordStrengthDiv = document.getElementById('passwordStrength');
+        const reqLength = document.getElementById('reqLength');
+        const reqSpecial = document.getElementById('reqSpecial');
+
+        // --- Utility Functions ---
+        const showMessage = (message, type = 'success') => {
+            // Remove any existing messages first
+            document.querySelectorAll('.message').forEach(el => el.remove());
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
             messageDiv.textContent = message;
             document.body.appendChild(messageDiv);
-            setTimeout(() => messageDiv.remove(), 4000);
-        }
+            setTimeout(() => messageDiv.remove(), 5000);
+        };
 
-        // ===== EVENT LISTENERS =====
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
-                resetConfirmation();
+        const setButtonLoading = (button, isLoading) => {
+            if (isLoading) {
+                button.disabled = true;
+                button.textContent = 'Sending...';
+            } else {
+                button.disabled = false;
+                button.textContent = 'Send Verification Email';
+            }
+        };
+
+        // --- Password Validation ---
+        function checkPasswordStrength(password) {
+            let requirements = {
+                length: password.length >= 6,
+                special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+            };
+
+            // Update UI indicators
+            updateRequirementIndicators(requirements);
+            
+            if (requirements.length && requirements.special) {
+                passwordStrengthDiv.textContent = 'Strong password';
+                passwordStrengthDiv.className = 'password-strength strong';
+                passwordInput.classList.remove('error');
+                passwordInput.classList.add('success');
+                return true;
+            } else {
+                passwordStrengthDiv.textContent = 'Weak password';
+                passwordStrengthDiv.className = 'password-strength weak';
+                passwordInput.classList.add('error');
+                passwordInput.classList.remove('success');
+                return false;
             }
         }
 
-        window.addEventListener('beforeunload', function() {
-            if (refreshInterval) {
-                clearInterval(refreshInterval);
+        function updateRequirementIndicators(requirements) {
+            updateIndicator(reqLength, requirements.length, 'At least 6 characters');
+            updateIndicator(reqSpecial, requirements.special, 'At least 1 special character');
+        }
+
+        function updateIndicator(element, isMet, text) {
+            element.className = `requirement ${isMet ? 'met' : 'unmet'}`;
+            element.innerHTML = `<span class="requirement-icon">${isMet ? '✓' : '○'}</span> ${text}`;
+        }
+        
+        function checkPasswordMatch() {
+            const isMatch = passwordInput.value === confirmPasswordInput.value && confirmPasswordInput.value !== '';
+            if (confirmPasswordInput.value === '') {
+                passwordMatchDiv.style.display = 'none';
+                confirmPasswordInput.classList.remove('error', 'success');
+            } else if (isMatch) {
+                passwordMatchDiv.textContent = '✓ Passwords match';
+                passwordMatchDiv.className = 'password-match success';
+                confirmPasswordInput.classList.remove('error');
+                confirmPasswordInput.classList.add('success');
+            } else {
+                passwordMatchDiv.textContent = '✗ Passwords do not match';
+                passwordMatchDiv.className = 'password-match error';
+                confirmPasswordInput.classList.add('error');
+                confirmPasswordInput.classList.remove('success');
             }
+            return isMatch;
+        }
+
+        // --- Form Logic ---
+        function validateForm() {
+            const isPasswordStrong = checkPasswordStrength(passwordInput.value);
+            const passwordsMatch = checkPasswordMatch();
+            verifyEmailBtn.disabled = !(isPasswordStrong && passwordsMatch);
+        }
+
+        async function handleRegistrationSubmit(event) {
+            event.preventDefault();
+            validateForm();
+            if (verifyEmailBtn.disabled) {
+                showMessage('Please fix the errors before submitting.', 'error');
+                return;
+            }
+
+            setButtonLoading(verifyEmailBtn, true);
+
+            const name = document.getElementById('memberName').value;
+            const email = document.getElementById('memberEmail').value;
+            const password = passwordInput.value;
+            const teamCode = document.getElementById('memberTeamCode').value.toUpperCase();
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/send-member-verification`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, teamCode })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'An unknown error occurred.');
+                }
+                
+                // Success! Show the "check your email" message.
+                showMessage('Verification email sent!', 'success');
+                sentToEmail.textContent = email;
+                joiningTeamName.textContent = result.teamName || 'your team';
+                registrationContainer.style.display = 'none';
+                verificationSentMessage.style.display = 'block';
+
+            } catch (error) {
+                showMessage(error.message, 'error');
+                setButtonLoading(verifyEmailBtn, false);
+            }
+        }
+        
+        // --- Event Listeners ---
+        memberRegisterForm.addEventListener('submit', handleRegistrationSubmit);
+        passwordInput.addEventListener('input', validateForm);
+        confirmPasswordInput.addEventListener('input', validateForm);
+        
+        // Auto-uppercase team code
+        document.getElementById('memberTeamCode').addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
         });
+
+        // Initial validation check on page load
+        validateForm();
     </script>
 </body>
 </html>
