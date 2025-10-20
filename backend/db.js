@@ -404,14 +404,3 @@ pool.on('error', (err, client) => {
     console.error('Unexpected error on idle client', err);
     process.exit(-1);
 });
-
-// Add this helper function for safe query execution
-const safeQuery = async (query, params = []) => {
-    const client = await pool.connect();
-    try {
-        const result = await client.query(query, params);
-        return result;
-    } finally {
-        client.release();
-    }
-};
