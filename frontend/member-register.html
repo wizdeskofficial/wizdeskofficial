@@ -228,6 +228,14 @@
             transform: translateY(-2px);
         }
 
+        .btn-retry {
+            background: linear-gradient(135deg, #fd7e14, #e44d26);
+        }
+
+        .btn-retry:hover:not(:disabled) {
+            background: linear-gradient(135deg, #e65c19, #cc3a10);
+        }
+
         /* Verification Section */
         .verification-section {
             background: #e7f3ff;
@@ -331,6 +339,8 @@
             font-weight: 500;
             z-index: 10000;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            max-width: 400px;
+            word-wrap: break-word;
         }
 
         .message.success {
@@ -345,10 +355,15 @@
             background: linear-gradient(135deg, #ffc107, #fd7e14);
         }
 
+        .message.info {
+            background: linear-gradient(135deg, #17a2b8, #20c997);
+        }
+
         /* Loading State */
         .btn-primary.loading {
             opacity: 0.7;
             cursor: not-allowed;
+            position: relative;
         }
 
         .btn-primary.loading::after {
@@ -368,6 +383,30 @@
             body {
                 padding: 15px;
             }
+            
+            .message {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .form-card {
+                padding: 20px 15px;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -386,7 +425,6 @@
                     <p>💡 Ask your Team Leader for the Team Code to join their team</p>
                 </div>
 
-                <!-- Registration Form -->
                 <form id="memberRegisterForm">
                     <div class="form-group">
                         <input type="text" id="memberName" placeholder="Your Full Name" required>
@@ -413,7 +451,7 @@
                         <div id="passwordMatch" class="password-match"></div>
                     </div>
                     <div class="form-group">
-                        <input type="text" id="memberTeamCode" placeholder="Team Code (from your leader)" required>
+                        <input type="text" id="memberTeamCode" placeholder="Team Code (from your leader)" required maxlength="6">
                     </div>
                     
                     <button type="button" class="btn-primary btn-verify" id="verifyEmailBtn">
@@ -421,7 +459,6 @@
                     </button>
                 </form>
 
-                <!-- Verification Section (Hidden initially) -->
                 <div id="verificationSection" style="display: none;">
                     <div class="verification-section">
                         <h3>Step 2: Verify Your Email</h3>
@@ -429,9 +466,9 @@
                             <p><strong>Team:</strong> <span id="teamNameDisplay"></span></p>
                         </div>
                         <div id="verificationStatus" class="verification-status verification-pending">
-                            📧 Check your email for verification link
+                            📧 Sending verification code...
                         </div>
-                        
+
                         <div id="verificationSuccess" style="display: none;">
                             <div class="verification-status verification-success">
                                 ✅ Email verified successfully!
@@ -440,12 +477,20 @@
                         </div>
 
                         <div id="manualVerification" style="display: none;">
-                            <p style="margin-bottom: 10px; color: #666;">If you didn't receive the email, enter the verification code manually:</p>
+                            <p style="margin-bottom: 10px; color: #666;">Enter the 6-digit verification code sent to your email:</p>
                             <div class="form-group">
-                                <input type="text" id="manualTokenInput" placeholder="Enter verification code" class="verification-code-input">
+                                <input type="text" id="manualTokenInput" placeholder="Enter 6-digit code" class="verification-code-input" maxlength="6" pattern="[0-9]{6}">
                             </div>
                             <button type="button" class="btn-primary" id="manualVerifyBtn">
                                 Verify Code
+                            </button>
+                        </div>
+
+                        <!-- Retry Section -->
+                        <div id="retrySection" style="display: none; margin-top: 15px;">
+                            <p style="color: #666; margin-bottom: 10px;">Email not received?</p>
+                            <button type="button" class="btn-primary btn-retry" id="retryEmailBtn">
+                                Resend Verification Code
                             </button>
                         </div>
                     </div>
@@ -464,7 +509,9 @@
                     </div>
                     <p>Your team leader has been notified and will review your membership request shortly.</p>
                     <p>You will receive an email once your membership is approved.</p>
-                    <button onclick="window.location.href='index.html'" class="btn-primary" style="background: linear-gradient(135deg, #28a745, #20c997); margin-top: 15px;">Go to Login</button>
+                    <button onclick="window.location.href='index.html'" class="btn-primary" style="background: linear-gradient(135deg, #28a745, #20c997); margin-top: 15px;">
+                        Go to Login
+                    </button>
                 </div>
                 
                 <div style="margin-top: 20px;">
@@ -479,15 +526,24 @@
     </div>
 
     <script>
-        const API_BASE = '/api';
+        // Auto-detect API base URL for production
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? '/api' 
+            : `${window.location.origin}/api`;
+
+        console.log('🌐 API Base URL:', API_BASE);
 
         // Utility function for showing messages
-        const showMessage = (message, type = 'success') => {
+        const showMessage = (message, type = 'success', duration = 5000) => {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
             messageDiv.textContent = message;
             document.body.appendChild(messageDiv);
-            setTimeout(() => messageDiv.remove(), 4000);
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
+                }
+            }, duration);
         };
 
         // DOM Elements
@@ -500,9 +556,11 @@
         const teamInfo = document.getElementById('teamInfo');
         const teamNameDisplay = document.getElementById('teamNameDisplay');
         const successTeamName = document.getElementById('successTeamName');
+        const retrySection = document.getElementById('retrySection');
         const verifyEmailBtn = document.getElementById('verifyEmailBtn');
         const manualVerifyBtn = document.getElementById('manualVerifyBtn');
         const completeRegistrationBtn = document.getElementById('completeRegistrationBtn');
+        const retryEmailBtn = document.getElementById('retryEmailBtn');
         const passwordInput = document.getElementById('memberPassword');
         const confirmPasswordInput = document.getElementById('confirmPassword');
         const passwordMatchDiv = document.getElementById('passwordMatch');
@@ -514,6 +572,8 @@
 
         let verificationToken = '';
         let teamName = '';
+        let retryCount = 0;
+        const MAX_RETRIES = 3;
 
         // Enhanced password strength checker with special character requirement
         function checkPasswordStrength(password) {
@@ -616,8 +676,8 @@
             verifyEmailBtn.disabled = !(isFormComplete && isEmailValid && isPasswordValid && isPasswordMatch);
         }
 
-        // Send verification email
-        async function sendVerificationEmail() {
+        // Send verification email with retry logic
+        async function sendVerificationEmail(isRetry = false) {
             const name = document.getElementById('memberName').value;
             const email = document.getElementById('memberEmail').value;
             const password = passwordInput.value;
@@ -628,13 +688,23 @@
                 input.disabled = true;
             });
 
-            verifyEmailBtn.textContent = 'Sending Verification...';
-            verifyEmailBtn.disabled = true;
+            if (isRetry) {
+                retryCount++;
+                retryEmailBtn.textContent = `Resending... (${retryCount}/${MAX_RETRIES})`;
+                retryEmailBtn.disabled = true;
+            } else {
+                verifyEmailBtn.textContent = 'Sending Verification...';
+                verifyEmailBtn.disabled = true;
+                verificationStatus.textContent = '📧 Sending verification code...';
+            }
 
             try {
                 const response = await fetch(`${API_BASE}/auth/send-member-verification`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify({ name, email, password, teamCode })
                 });
 
@@ -644,9 +714,11 @@
                     verificationToken = result.verificationToken;
                     teamName = result.teamName;
                     
-                    // Show verification section
-                    memberRegisterForm.style.display = 'none';
-                    verificationSection.style.display = 'block';
+                    if (!isRetry) {
+                        // Show verification section on first attempt
+                        memberRegisterForm.style.display = 'none';
+                        verificationSection.style.display = 'block';
+                    }
                     
                     // Show team info
                     if (teamName) {
@@ -655,42 +727,82 @@
                     }
                     
                     if (result.emailSent && result.emailMethod === 'email') {
-                        showMessage('Verification email sent! Check your inbox.', 'success');
-                        // Show manual verification option as fallback
-                        setTimeout(() => {
-                            manualVerification.style.display = 'block';
-                        }, 5000);
+                        verificationStatus.textContent = '📧 Verification code sent to your email! Check your inbox.';
+                        verificationStatus.className = 'verification-status verification-success';
+                        showMessage('Verification code sent to your email!', 'success');
                     } else {
-                        // Email service not configured, show manual token
-                        showMessage('Email service not available. Use manual verification.', 'warning');
-                        manualVerification.style.display = 'block';
+                        verificationStatus.textContent = '📧 Email service unavailable. Please try manual verification.';
+                        verificationStatus.className = 'verification-status verification-pending';
+                        showMessage('Email service temporarily unavailable. Please try manual verification.', 'warning');
                     }
+                    
+                    // Show manual verification and retry options
+                    manualVerification.style.display = 'block';
+                    retrySection.style.display = 'block';
+                    
+                    if (isRetry) {
+                        showMessage('Verification code resent!', 'info');
+                    }
+
                 } else {
-                    showMessage(result.error, 'error');
-                    // Re-enable form fields if failed
-                    document.querySelectorAll('#memberRegisterForm input').forEach(input => {
-                        input.disabled = false;
-                    });
-                    verifyEmailBtn.textContent = 'Verify Your Email';
-                    validateForm();
+                    // If email already exists, show error and don't move to verification
+                    if (result.error && result.error.includes('already exists')) {
+                        throw new Error(result.error);
+                    } else {
+                        throw new Error(result.error || 'Failed to send verification');
+                    }
                 }
             } catch (error) {
-                showMessage('Failed to send verification email', 'error');
-                // Re-enable form fields if failed
+                console.error('Verification error:', error);
+                
+                // Show error message and re-enable form
+                showMessage(error.message, 'error');
+                
+                // Re-enable form fields
                 document.querySelectorAll('#memberRegisterForm input').forEach(input => {
                     input.disabled = false;
                 });
-                verifyEmailBtn.textContent = 'Verify Your Email';
-                validateForm();
+                
+                if (isRetry) {
+                    retryEmailBtn.disabled = false;
+                    retryEmailBtn.textContent = `Retry Failed - Click to try again (${retryCount}/${MAX_RETRIES})`;
+                } else {
+                    verifyEmailBtn.textContent = 'Verify Your Email';
+                    verifyEmailBtn.disabled = false;
+                    validateForm();
+                    
+                    // Don't show verification section if email already exists
+                    if (!error.message.includes('already exists')) {
+                        memberRegisterForm.style.display = 'none';
+                        verificationSection.style.display = 'block';
+                        verificationStatus.textContent = '❌ Failed to send email. Please try manual verification.';
+                        verificationStatus.className = 'verification-status verification-pending';
+                        manualVerification.style.display = 'block';
+                        retrySection.style.display = 'block';
+                    }
+                }
+            } finally {
+                if (!isRetry) {
+                    verifyEmailBtn.textContent = 'Verify Your Email';
+                    verifyEmailBtn.disabled = false;
+                } else {
+                    retryEmailBtn.textContent = 'Resend Verification Code';
+                    retryEmailBtn.disabled = false;
+                }
             }
         }
 
         // Manual verification
         async function verifyManualToken() {
-            const token = document.getElementById('manualTokenInput').value;
+            const token = document.getElementById('manualTokenInput').value.trim();
 
             if (!token) {
                 showMessage('Please enter the verification code', 'error');
+                return;
+            }
+
+            if (token.length !== 6 || !/^\d+$/.test(token)) {
+                showMessage('Please enter a valid 6-digit code', 'error');
                 return;
             }
 
@@ -700,20 +812,25 @@
             try {
                 const response = await fetch(`${API_BASE}/auth/verify-member-email`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token })
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ token: token })
                 });
 
                 const result = await response.json();
 
                 if (response.ok) {
+                    verificationToken = token;
                     showVerificationSuccess();
                     completeRegistration(result);
                 } else {
                     showMessage(result.error || 'Invalid verification code', 'error');
                 }
             } catch (error) {
-                showMessage('Verification failed', 'error');
+                console.error('Verification error:', error);
+                showMessage('Verification failed. Please check your connection.', 'error');
             } finally {
                 manualVerifyBtn.textContent = 'Verify Code';
                 manualVerifyBtn.disabled = false;
@@ -734,14 +851,22 @@
         function showVerificationSuccess() {
             verificationSuccess.style.display = 'block';
             manualVerification.style.display = 'none';
+            retrySection.style.display = 'none';
             completeRegistrationBtn.style.display = 'block';
             verificationStatus.className = 'verification-status verification-success';
             verificationStatus.textContent = '✅ Email verified successfully!';
         }
 
         // Event Listeners
-        verifyEmailBtn.addEventListener('click', sendVerificationEmail);
+        verifyEmailBtn.addEventListener('click', () => sendVerificationEmail(false));
         manualVerifyBtn.addEventListener('click', verifyManualToken);
+        retryEmailBtn.addEventListener('click', () => {
+            if (retryCount >= MAX_RETRIES) {
+                showMessage(`Maximum retry attempts (${MAX_RETRIES}) reached. Please use the manual verification.`, 'warning');
+                return;
+            }
+            sendVerificationEmail(true);
+        });
 
         completeRegistrationBtn.addEventListener('click', async () => {
             if (!verificationToken) {
@@ -756,7 +881,10 @@
             try {
                 const response = await fetch(`${API_BASE}/auth/verify-member-email`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify({ token: verificationToken })
                 });
 
@@ -765,13 +893,14 @@
                 if (response.ok) {
                     completeRegistration(result);
                 } else {
-                    showMessage(result.error, 'error');
+                    showMessage(result.error || 'Registration failed', 'error');
                     completeRegistrationBtn.classList.remove('loading');
                     completeRegistrationBtn.disabled = false;
                     completeRegistrationBtn.textContent = 'Complete Registration';
                 }
             } catch (error) {
-                showMessage('Registration failed. Please try again.', 'error');
+                console.error('Registration error:', error);
+                showMessage('Registration failed. Please check your connection and try again.', 'error');
                 completeRegistrationBtn.classList.remove('loading');
                 completeRegistrationBtn.disabled = false;
                 completeRegistrationBtn.textContent = 'Complete Registration';
@@ -785,7 +914,6 @@
             if (password.length === 0) {
                 passwordStrengthDiv.style.display = 'none';
                 passwordInput.classList.remove('error', 'success');
-                // Reset requirement indicators
                 reqLength.className = 'requirement';
                 reqLength.innerHTML = '<span class="requirement-icon">○</span> At least 6 characters';
                 reqSpecial.className = 'requirement';
@@ -822,12 +950,29 @@
         const teamCodeInput = document.getElementById('memberTeamCode');
         if (teamCodeInput) {
             teamCodeInput.addEventListener('input', function() {
-                this.value = this.value.toUpperCase();
+                this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
             });
         }
 
+        // Auto-format manual token input to accept only numbers
+        document.getElementById('manualTokenInput')?.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
+        });
+
+        // Enter key support for manual verification
+        document.getElementById('manualTokenInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyManualToken();
+            }
+        });
+
         // Initialize form validation
         validateForm();
+
+        // Service worker check for production
+        if ('serviceWorker' in navigator && window.location.hostname !== 'localhost') {
+            navigator.serviceWorker.register('/sw.js').catch(console.error);
+        }
     </script>
 </body>
 </html>
