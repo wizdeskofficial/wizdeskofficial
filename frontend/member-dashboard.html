@@ -226,7 +226,7 @@
             currentUser = JSON.parse(userData);
             
             // For member dashboard - check if user is actually a member and approved
-            if (window.location.pathname.includes('member-dashboard.html') && 
+            if (window.location.pathname.includes('/member-dashboard') && 
                 (currentUser.role !== 'member' || currentUser.status !== 'approved')) {
                 localStorage.removeItem('user');
                 window.location.href = 'index.html';
